@@ -1,0 +1,51 @@
+# Unblock A Stuck Delivery Pipeline
+# Astrona graded capstone. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-capstone-020"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-capstone-020-setup"
+      description: "Creates a three-stage pipeline of Flux Kustomizations with three independent faults"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-dependencies-kept"
+      description: "Confirms apps-staging still depends on infrastructure and apps-production on apps-staging, and nothing is suspended"
+      type: "file"
+      source: "validation/validate-dependencies-kept.sh"
+    - name: "validate-health-gates-kept"
+      description: "Confirms apps-staging and apps-production are still health-checked against their real Deployments"
+      type: "file"
+      source: "validation/validate-health-gates-kept.sh"
+    - name: "validate-pipeline-ready"
+      description: "Confirms all three stages are Ready and redis and both podinfo copies answer as expected"
+      type: "file"
+      source: "validation/validate-pipeline-ready.sh"
+
+teardown:
+  keepCluster: false

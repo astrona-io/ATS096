@@ -1,0 +1,51 @@
+# Keep Two Environments Equal To Git
+# Astrona graded capstone. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-capstone-040"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-capstone-040-setup"
+      description: "Creates a Flux Kustomization without pruning and a HelmRelease in warn mode, leaves a pruned file behind, and blocks an update with an ssa annotation"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-staging-sync"
+      description: "Confirms podinfo-staging prunes, is Ready, and the leftover ConfigMap podinfo-legacy-settings is gone"
+      type: "file"
+      source: "validation/validate-staging-sync.sh"
+    - name: "validate-staging-updated"
+      description: "Confirms the ssa annotation is gone from Git and the staging Deployment answers the message staging v2"
+      type: "file"
+      source: "validation/validate-staging-updated.sh"
+    - name: "validate-production-drift"
+      description: "Confirms production corrects drift: drift detection enabled, and a manual scale is reverted to 2"
+      type: "file"
+      source: "validation/validate-production-drift.sh"
+
+teardown:
+  keepCluster: false

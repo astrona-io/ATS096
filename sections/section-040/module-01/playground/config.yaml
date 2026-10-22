@@ -1,0 +1,24 @@
+# Keep The Cluster Equal To Git (PLAYGROUND) — Playground environment
+# A clean sandbox: it spins up, runs OS prep, then stays running for free
+# exploration. No task, no grading, no `astrona submit`.
+# Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-playground-040-01"
+  docs:
+    guide: "docs/overview.md"
+
+bootstrap:
+  init:
+    - name: "prepare"
+      description: "Install the Flux CLI 2.9.6, start Gitea with gitops/fleet, make gitea.localtest.me resolve inside the cluster, install Flux, connect the fleet source, create the podinfo namespaces, and start podinfo-staging (a Flux Kustomization) and podinfo-production (a HelmRelease)."
+      type: "file"
+      source: "bootstrap/prepare.sh"
+  manifests:
+    - name: "lab-start"
+      description: "Starting workloads (namespace gitea, Gitea Deployment and Service gitea-http, tester client)."
+      type: "file"
+      source: "manifests/lab-start.yaml"
+
+teardown:
+  keepCluster: false

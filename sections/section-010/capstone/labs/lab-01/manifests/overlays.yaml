@@ -1,0 +1,55 @@
+# The two environments, each with one fault on purpose:
+#   podinfo-staging    applies into a namespace that does not exist,
+#   podinfo-production reads its values from a ConfigMap that does not exist,
+#                      and its replica patch targets a Deployment that is not
+#                      in the build.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: podinfo-staging
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/podinfo/base
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-stage
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+  postBuild:
+    substitute:
+      environment: staging
+      message: staging
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: podinfo-production
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/podinfo/base
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-production
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+  patches:
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: podinfo
+        spec:
+          replicas: 3
+      target:
+        kind: Deployment
+        name: podinfo-api
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: podinfo-production-vars

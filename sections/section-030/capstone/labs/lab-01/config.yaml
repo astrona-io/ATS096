@@ -1,0 +1,51 @@
+# Repair Two Helm Releases
+# Astrona graded capstone. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-capstone-030"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-capstone-030-setup"
+      description: "Creates an OCIRepository, a HelmRepository, a values Secret and two HelmReleases with three independent faults"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-staging-oci"
+      description: "Confirms staging installs the chart from the OCIRepository podinfo-chart at tag 6.15.0 through chartRef, and is Ready"
+      type: "file"
+      source: "validation/validate-staging-oci.sh"
+    - name: "validate-production-values"
+      description: "Confirms production takes its values from the Secret podinfo-values (not optional) and is Ready"
+      type: "file"
+      source: "validation/validate-production-values.sh"
+    - name: "validate-environment-values"
+      description: "Confirms staging answers staging and production answers the message from the Secret with 2 replicas"
+      type: "file"
+      source: "validation/validate-environment-values.sh"
+
+teardown:
+  keepCluster: false

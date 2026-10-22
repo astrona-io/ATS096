@@ -1,0 +1,344 @@
+# Course manifest for ATS096 - Kustomize & Helm Controller Reconciliation (FluxCD).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's summary page
+# comes last. The section capstone closes the section. Playgrounds are not
+# listed: the landing page's playground marker shows them. solution.md is
+# never listed.
+#
+# Every `path:` is relative to this file.
+
+training:
+  id: ATS096
+  title: "FluxCD: Kustomize & Helm Controller Reconciliation"
+  maturity: draft
+  description: >
+    Training material covering the Kustomize & Helm Controller Reconciliation
+    domain of the FluxCD training path: the Flux Kustomization against the
+    Kustomize command-line tool, target namespaces, patches and post-build
+    variable substitution, ordering with dependsOn, health checks and a staged
+    pipeline from staging to production, HelmRelease with HelmRepository and
+    OCI chart sources, values from ConfigMaps and Secrets, remediation and
+    rollback of failed upgrades, and drift detection, correction and pruning
+    in kustomize-controller and helm-controller. Each module pairs a layered
+    reader with an ungraded hands-on playground and a graded practice lab.
+    Each section closes with an integration capstone.
+    Written for Flux v2.9.6 and the podinfo chart 6.15.0.
+
+  certification:
+    name: FluxCD
+    code: FLUX
+    provider: Astrona
+    domain: Kustomize & Helm Controller Reconciliation
+    weight: 25
+
+modules:
+
+  - id: module-intro
+    title: "Introduction"
+    description: >
+      Start here. What this course trains you to do, how it is laid out, how
+      to get your machine ready with the astrona command-line tool, how the
+      content is written and checked, who maintains it, and how to report a
+      mistake.
+
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: "Welcome To The Course"
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: "Get Your Machine Ready"
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: "How This Course Is Made"
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+  - id: module-010
+    title: "The Flux Kustomization In Depth"
+    description: >
+      How kustomize-controller builds a folder compared with the Kustomize
+      command-line tool, previewing a build with flux build and flux diff,
+      target namespaces, strategic merge and JSON6902 patches, and post-build
+      variable substitution from inline values, ConfigMaps and Secrets.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Shape What Flux Applies With The Flux Kustomization"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "The Flux Kustomization And Kustomize"
+        path: sections/section-010/module-01/course-01-flux-kustomization-and-kustomize.md
+      - type: reading
+        title: "Target Namespaces And Patches"
+        path: sections/section-010/module-01/course-02-target-namespaces-and-patches.md
+      - type: reading
+        title: "Variable Substitution After The Build"
+        path: sections/section-010/module-01/course-03-variable-substitution.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Deploy One Base To Two Environments Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: kustomize-build
+        task_kind: build
+        tags: [kustomization, target-namespace, patches, post-build-substitution, flux-get]
+        learning_goals:
+          - Deploy one base folder twice with two Flux Kustomizations and two target namespaces
+          - Set the replica count with a patch and the message and label with post-build substitution
+          - Prove each environment with a ready Deployment and a request that returns its own message
+        resources:
+          - name: "Kustomization API"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+          - name: "flux build kustomization"
+            url: https://fluxcd.io/flux/cmd/flux_build_kustomization/
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Repair The Overlays Of Two Environments Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: kustomize-build
+        task_kind: troubleshooting
+        tags: [kustomization, target-namespace, patches, substitute-from, flux-build, flux-events]
+        learning_goals:
+          - Find a missing namespace, a missing variable source and a patch that matches nothing
+          - Fix the two Flux Kustomizations without making a variable source optional
+          - Prove each environment with its message and its replica count
+        resources:
+          - name: "Kustomization API: patches and post-build substitution"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+          - name: "flux diff kustomization"
+            url: https://fluxcd.io/flux/cmd/flux_diff_kustomization/
+
+  - id: module-020
+    title: "Dependencies And Health Checks"
+    description: >
+      Ordering Flux Kustomizations with dependsOn, making Ready mean that the
+      workload really runs with wait, healthChecks and healthCheckExprs,
+      timeouts and retry intervals, and a staged pipeline in which production
+      waits for a healthy staging.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Order And Gate Deployments With dependsOn And Health Checks"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "Ordering With dependsOn"
+        path: sections/section-020/module-01/course-01-ordering-with-dependson.md
+      - type: reading
+        title: "Health Checks, Timeouts And Retries"
+        path: sections/section-020/module-01/course-02-health-checks-timeouts-and-retries.md
+      - type: reading
+        title: "A Staged Pipeline From Staging To Production"
+        path: sections/section-020/module-01/course-03-staged-pipeline.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Build A Staged Pipeline From Staging To Production Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: dependencies
+        task_kind: build
+        tags: [depends-on, wait, health-checks, staged-rollout, kustomization, timeout]
+        learning_goals:
+          - Order an infrastructure stage, a staging stage and a production stage with dependsOn
+          - Gate each stage with a health check so Ready means the workload runs
+          - Prove the pipeline with three Ready stages and both copies of podinfo answering
+        resources:
+          - name: "Kustomization API: dependencies"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/#dependencies
+          - name: "Kustomization API: health checks"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/#health-checks
+          - name: "Ways of structuring your repositories"
+            url: https://fluxcd.io/flux/guides/repository-structure/
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Unblock A Stuck Delivery Pipeline Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 35m
+        topic: health-checks
+        task_kind: troubleshooting
+        tags: [depends-on, health-checks, timeout, staged-rollout, flux-events, flux-reconcile]
+        learning_goals:
+          - Find why each stage of a pipeline is not Ready from its reason and its events
+          - Fix a wrong path, a health check on a missing Deployment and a dependency typo
+          - Keep every dependency and health gate in place while the pipeline becomes Ready
+        resources:
+          - name: "Kustomization API"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+          - name: "Flux troubleshooting cheatsheet"
+            url: https://fluxcd.io/flux/cheatsheets/troubleshooting/
+
+  - id: module-030
+    title: "Deploying Helm Charts With HelmRelease"
+    description: >
+      Installing a Helm chart from a HelmRepository with a HelmRelease, the
+      HelmChart that helm-controller creates, values and valuesFrom with
+      ConfigMaps and Secrets, OCI chart sources with chartRef, and what
+      helm-controller does when an install or an upgrade fails: retries,
+      rollback and the Stalled condition.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Deploy Helm Charts With HelmRelease"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "From HelmRepository To HelmRelease"
+        path: sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+      - type: reading
+        title: "Values, valuesFrom And OCI Chart Sources"
+        path: sections/section-030/module-01/course-02-values-and-chart-sources.md
+      - type: reading
+        title: "Failed Upgrades, Remediation And Rollback"
+        path: sections/section-030/module-01/course-03-remediation-and-rollback.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Override A Chart Per Environment And Survive A Bad Upgrade Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: remediation
+        task_kind: build
+        tags: [helmrelease, helmrepository, values-from, remediation, rollback, helm-storage]
+        learning_goals:
+          - Install one chart into two environments with values from a ConfigMap per environment
+          - Configure upgrade remediation so a failed upgrade rolls back on its own
+          - Prove the rollback from Helm's storage, then put production back on a good release
+        resources:
+          - name: "HelmRelease API"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/
+          - name: "Manage Helm releases"
+            url: https://fluxcd.io/flux/guides/helmreleases/
+          - name: "HelmRepository API"
+            url: https://fluxcd.io/flux/components/source/helmrepositories/
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Repair Two Helm Releases Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 35m
+        topic: helm-release
+        task_kind: troubleshooting
+        tags: [helmrelease, ocirepository, chart-ref, values-from, remediation, flux-events]
+        learning_goals:
+          - Find why an OCI chart source, a chart source reference and a values Secret stop two HelmReleases
+          - Fix each reference without changing the Secret or making it optional
+          - Prove each environment with the message and replica count its values ask for
+        resources:
+          - name: "OCIRepository API"
+            url: https://fluxcd.io/flux/components/source/ocirepositories/
+          - name: "HelmRelease API: chart reference and values"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/
+
+  - id: module-040
+    title: "Drift Detection, Correction And Pruning"
+    description: >
+      How kustomize-controller finds and corrects drift with server-side
+      apply, the ssa, prune and reconcile annotations, pruning with the
+      inventory and deletion policies, and drift detection and correction in
+      helm-controller with ignore rules.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-040/README.md
+
+      - type: reading
+        title: "Keep The Cluster Equal To Git"
+        path: sections/section-040/module-01/course.md
+      - type: reading
+        title: "Drift Correction With Server-Side Apply"
+        path: sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+      - type: reading
+        title: "Pruning, The Inventory And Deletion Policies"
+        path: sections/section-040/module-01/course-02-pruning-and-the-inventory.md
+      - type: reading
+        title: "Drift Detection In helm-controller"
+        path: sections/section-040/module-01/course-03-helm-drift-detection.md
+      - type: reading
+        title: Question
+        path: sections/section-040/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Make Helm Correct Drift Without Touching Tuned Fields Lab"
+        path: sections/section-040/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: drift
+        task_kind: build
+        tags: [drift-detection, drift-correction, helmrelease, flux-reconcile]
+        learning_goals:
+          - Turn on drift correction for a HelmRelease
+          - Exclude one hand-tuned field from drift correction with a JSON Pointer ignore rule
+          - Prove that a manual scale is reverted while the tuned field stays
+        resources:
+          - name: "HelmRelease API: drift detection"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/#drift-detection
+          - name: "Manage Helm releases"
+            url: https://fluxcd.io/flux/guides/helmreleases/
+      - type: reading
+        title: Summary
+        path: sections/section-040/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-040/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Keep Two Environments Equal To Git Capstone"
+        path: sections/section-040/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: drift
+        task_kind: troubleshooting
+        tags: [prune, inventory, ssa-annotation, server-side-apply, drift-detection, drift-correction]
+        learning_goals:
+          - Find an object left behind without pruning and an update blocked by an ssa annotation
+          - Fix the Git source and the Flux objects so both environments follow Git again
+          - Prove that staging shows the new message and production reverts a manual scale
+        resources:
+          - name: "Kustomization API: garbage collection and annotations"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+          - name: "HelmRelease API: drift detection"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/#drift-detection

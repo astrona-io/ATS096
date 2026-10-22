@@ -1,0 +1,51 @@
+# Repair The Overlays Of Two Environments
+# Astrona graded capstone. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-capstone-010"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-capstone-010-setup"
+      description: "Creates the ConfigMap podinfo-prod-vars and two Flux Kustomizations with three independent faults"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-staging"
+      description: "Confirms podinfo-staging is Ready, applies into podinfo-staging and answers with the message staging"
+      type: "file"
+      source: "validation/validate-staging.sh"
+    - name: "validate-production-values"
+      description: "Confirms podinfo-production is Ready and takes its variables from the ConfigMap podinfo-prod-vars, not optional"
+      type: "file"
+      source: "validation/validate-production-values.sh"
+    - name: "validate-production-replicas"
+      description: "Confirms the production Deployment runs 3 ready replicas set by the patch"
+      type: "file"
+      source: "validation/validate-production-replicas.sh"
+
+teardown:
+  keepCluster: false

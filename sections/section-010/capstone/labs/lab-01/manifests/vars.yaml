@@ -1,0 +1,10 @@
+# The production values. The platform team created this ConfigMap; the task
+# must use it as it is.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: podinfo-prod-vars
+  namespace: flux-system
+data:
+  environment: production
+  message: production from ConfigMap

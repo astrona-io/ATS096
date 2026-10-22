@@ -1,0 +1,55 @@
+# Override A Chart Per Environment And Survive A Bad Upgrade
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-030-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-030-01-setup"
+      description: "Creates the HelmRepository podinfo in flux-system and waits until its index is fetched"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-releases-ready"
+      description: "Confirms both HelmReleases install chart podinfo 6.15.0 from the HelmRepository with values from the ConfigMap podinfo-values, and are Ready"
+      type: "file"
+      source: "validation/validate-releases-ready.sh"
+    - name: "validate-environment-values"
+      description: "Confirms staging answers staging with 1 replica and production answers production with 2 replicas"
+      type: "file"
+      source: "validation/validate-environment-values.sh"
+    - name: "validate-remediation"
+      description: "Confirms production rolls back a failed upgrade: retries of at least 1 and the strategy rollback"
+      type: "file"
+      source: "validation/validate-remediation.sh"
+    - name: "validate-rollback-recorded"
+      description: "Confirms Helm's storage holds a failed production revision and the deployed revision runs image tag 6.15.0"
+      type: "file"
+      source: "validation/validate-rollback-recorded.sh"
+
+teardown:
+  keepCluster: false

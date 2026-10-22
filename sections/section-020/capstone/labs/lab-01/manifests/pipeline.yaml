@@ -1,0 +1,69 @@
+# A three-stage pipeline with one fault per stage, on purpose:
+#   infrastructure  points at a folder that does not exist,
+#   apps-staging    health-checks a Deployment that is never applied,
+#   apps-production depends on a name with a typo.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 30s
+  path: ./infrastructure/cache
+  prune: true
+  wait: true
+  timeout: 2m
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-staging
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 30s
+  path: ./apps/podinfo/base
+  prune: true
+  timeout: 1m
+  targetNamespace: podinfo-staging
+  dependsOn:
+    - name: infrastructure
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: podinfo-api
+      namespace: podinfo-staging
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+  postBuild:
+    substitute:
+      environment: staging
+      message: staging
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-production
+  namespace: flux-system
+spec:
+  interval: 10m
+  retryInterval: 30s
+  path: ./apps/podinfo/base
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-production
+  dependsOn:
+    - name: apps-stagging
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+  postBuild:
+    substitute:
+      environment: production
+      message: production
