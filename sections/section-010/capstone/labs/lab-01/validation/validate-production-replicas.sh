@@ -2,6 +2,21 @@
 # PASS when the patch of podinfo-production sets 3 replicas on the Deployment
 # podinfo, and the Deployment applied by Flux runs 3 ready replicas.
 set -uo pipefail
+# grep -q stops reading at the first match; under pipefail the command
+# writing into the pipe then fails with SIGPIPE and a match looks like a
+# failure. This wrapper reads all input instead and keeps grep's exit status.
+grep() {
+  local arg quiet=0 args=()
+  for arg in "$@"; do
+    case "$arg" in
+      --quiet|--silent) quiet=1 ;;
+      --*) args+=("$arg") ;;
+      -*q*) quiet=1; [ "$arg" = "-q" ] || args+=("${arg//q/}") ;;
+      *) args+=("$arg") ;;
+    esac
+  done
+  if [ "$quiet" = 1 ]; then command grep "${args[@]}" >/dev/null; else command grep "$@"; fi
+}
 
 TARGET="$(kubectl -n flux-system get kustomization podinfo-production \
   -o jsonpath='{range .spec.patches[*]}{.target.kind}/{.target.name}{"\n"}{end}' 2>/dev/null)"

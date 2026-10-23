@@ -2,6 +2,21 @@
 # PASS when the ssa annotation is gone from the Deployment in Git, the Flux
 # Kustomization still asks for "staging v2", and podinfo answers with it.
 set -uo pipefail
+# grep -q stops reading at the first match; under pipefail the command
+# writing into the pipe then fails with SIGPIPE and a match looks like a
+# failure. This wrapper reads all input instead and keeps grep's exit status.
+grep() {
+  local arg quiet=0 args=()
+  for arg in "$@"; do
+    case "$arg" in
+      --quiet|--silent) quiet=1 ;;
+      --*) args+=("$arg") ;;
+      -*q*) quiet=1; [ "$arg" = "-q" ] || args+=("${arg//q/}") ;;
+      *) args+=("$arg") ;;
+    esac
+  done
+  if [ "$quiet" = 1 ]; then command grep "${args[@]}" >/dev/null; else command grep "$@"; fi
+}
 
 RAW="$(kubectl -n gitea exec deploy/tester -- curl -fsS -u gitops:gitops-password \
   'http://gitea-http.gitea:3000/api/v1/repos/gitops/fleet/raw/apps/podinfo/base/deployment.yaml?ref=main' 2>/dev/null)"
