@@ -31,8 +31,6 @@ training:
     name: FluxCD
     code: FLUX
     provider: Astrona
-    domain: Kustomize & Helm Controller Reconciliation
-    weight: 25
 
 modules:
 
