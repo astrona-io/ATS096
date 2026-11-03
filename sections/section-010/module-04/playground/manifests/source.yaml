@@ -1,0 +1,14 @@
+# The Git source every ATS096 environment starts with. The Secret fleet-auth
+# is created by the bootstrap with `flux create secret git`.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: fleet
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: http://gitea.localtest.me:3000/gitops/fleet.git
+  ref:
+    branch: main
+  secretRef:
+    name: fleet-auth

@@ -1,0 +1,49 @@
+# Take Values From A ConfigMap And Patch The Output
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-030-03"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-030-03-setup"
+      description: "Removes any HelmRelease and creates the ConfigMap hello-message in podinfo-staging"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-release-wiring"
+      description: "Confirms the HelmRelease hello reads the ConfigMap hello-message with targetPath message and carries a kustomize post-renderer patch"
+      type: "file"
+      source: "validation/validate-release-wiring.sh"
+    - name: "validate-rendered-result"
+      description: "Confirms hello is Ready, hello-config holds the message from the ConfigMap and carries the annotation owner=platform"
+      type: "file"
+      source: "validation/validate-rendered-result.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13

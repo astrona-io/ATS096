@@ -1,0 +1,240 @@
+# Knowledge check for module 02 of section 040. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-040-m02
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-02
+  title: Share Fields Between Flux And Other Controllers
+placement:
+  position: after
+  reading: sections/section-040/module-02/course-05-summary.md
+questions:
+- id: ats096-040-m02-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the operation
+  source_readings:
+  - sections/section-040/module-02/course-01-reading-field-ownership.md
+  prompt: Which operation does a server-side apply record in `managedFields`?
+  options:
+  - id: a
+    text: "`Apply`"
+    explanation: Correct. Server-side apply records Apply.
+  - id: b
+    text: "`Update`"
+    explanation: Not correct. That is a plain write such as kubectl scale.
+  - id: c
+    text: "`Patch`"
+    explanation: Not correct. Not an operation name in the record.
+  - id: d
+    text: "`Create`"
+    explanation: Not correct. Not used for later fields.
+  correct_option: a
+  explanation: Correct. Server-side apply records Apply.
+- id: ats096-040-m02-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Show the record
+  source_readings:
+  - sections/section-040/module-02/course-01-reading-field-ownership.md
+  prompt: Which flag makes `kubectl get` print `managedFields`?
+  options:
+  - id: a
+    text: "`--managed`"
+    explanation: Not correct. No such flag.
+  - id: b
+    text: "`--field-manager`"
+    explanation: Not correct. That sets a manager on writes.
+  - id: c
+    text: "`--show-labels`"
+    explanation: Not correct. That prints labels.
+  - id: d
+    text: "`--show-managed-fields`"
+    explanation: Correct. The record is hidden by default.
+  correct_option: d
+  explanation: Correct. The record is hidden by default.
+- id: ats096-040-m02-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Understand ownership
+  source_readings:
+  - sections/section-040/module-02/course-01-reading-field-ownership.md
+  prompt: What does a leaf key such as `f:replicas` in `fieldsV1` mean?
+  options:
+  - id: a
+    text: The field was deleted.
+    explanation: Not correct. Deleted fields are not listed.
+  - id: b
+    text: The field is read-only.
+    explanation: Not correct. It is about ownership.
+  - id: c
+    text: The manager owns the field `replicas`.
+    explanation: 'Correct. f: keys name owned fields.'
+  - id: d
+    text: The field is a label.
+    explanation: Not correct. Labels use a different key.
+  correct_option: c
+  explanation: 'Correct. f: keys name owned fields.'
+- id: ats096-040-m02-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Predict the result
+  source_readings:
+  - sections/section-040/module-02/course-01-reading-field-ownership.md
+  prompt: 'A person runs `kubectl scale --replicas=3` on a Deployment whose `replicas:
+    1` is in Git. What happens at the next reconciliation?'
+  options:
+  - id: a
+    text: The value 3 is kept.
+    explanation: Not correct. Flux forces the value from Git.
+  - id: b
+    text: Flux sets it back to 1.
+    explanation: Correct. Git wins for fields that Flux sets.
+  - id: c
+    text: The Flux Kustomization fails.
+    explanation: Not correct. There is no failure.
+  - id: d
+    text: The Deployment is deleted.
+    explanation: Not correct. It is not deleted.
+  correct_option: b
+  explanation: Correct. Git wins for fields that Flux sets.
+- id: ats096-040-m02-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Free a field
+  source_readings:
+  - sections/section-040/module-02/course-02-letting-another-writer-own-a-field.md
+  prompt: How do you stop Flux from owning `spec.replicas`?
+  options:
+  - id: a
+    text: Remove `replicas` from the YAML in Git.
+    explanation: Correct. Flux owns only what it sends.
+  - id: b
+    text: 'Set `prune: false`.'
+    explanation: Not correct. That is about deletion.
+  - id: c
+    text: 'Add `replicas: null` to the Kustomization.'
+    explanation: Not correct. There is no such field.
+  - id: d
+    text: Suspend the Flux Kustomization.
+    explanation: Not correct. It frees every field.
+  correct_option: a
+  explanation: Correct. Flux owns only what it sends.
+- id: ats096-040-m02-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Predict the reset
+  source_readings:
+  - sections/section-040/module-02/course-02-letting-another-writer-own-a-field.md
+  prompt: What is the replica count right after `replicas` leaves the only owner's
+    YAML and nobody else owns it?
+  options:
+  - id: a
+    text: The last value stays.
+    explanation: Not correct. It resets.
+  - id: b
+    text: '0'
+    explanation: Not correct. The default is 1.
+  - id: c
+    text: It cannot be read.
+    explanation: Not correct. It can be read.
+  - id: d
+    text: The default of the Deployment, 1.
+    explanation: Correct. The field returns to its default.
+  correct_option: d
+  explanation: Correct. The field returns to its default.
+- id: ats096-040-m02-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name a writer
+  source_readings:
+  - sections/section-040/module-02/course-02-letting-another-writer-own-a-field.md
+  prompt: Why pass `--field-manager=autoscaler` when you play the autoscaler?
+  options:
+  - id: a
+    text: It is needed for the patch to work.
+    explanation: Not correct. The patch works without it.
+  - id: b
+    text: It bypasses conflicts.
+    explanation: Not correct. It does not.
+  - id: c
+    text: The record then says who wrote the value.
+    explanation: Correct. The manager name shows in the record.
+  - id: d
+    text: It makes Flux ignore the field.
+    explanation: Not correct. Only removing the field does.
+  correct_option: c
+  explanation: Correct. The manager name shows in the record.
+- id: ats096-040-m02-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read a conflict
+  source_readings:
+  - sections/section-040/module-02/course-03-conflicts-and-forced-changes.md
+  prompt: Why is `kubectl apply --server-side` refused with a conflict on `.spec.replicas`?
+  options:
+  - id: a
+    text: The Deployment is invalid.
+    explanation: Not correct. The object is fine.
+  - id: b
+    text: Another manager owns the field and the values differ.
+    explanation: Correct. A conflict protects the owner.
+  - id: c
+    text: The namespace is missing.
+    explanation: Not correct. It exists.
+  - id: d
+    text: Server-side apply is disabled.
+    explanation: Not correct. It is on.
+  correct_option: b
+  explanation: Correct. A conflict protects the owner.
+- id: ats096-040-m02-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Force and lose
+  source_readings:
+  - sections/section-040/module-02/course-03-conflicts-and-forced-changes.md
+  prompt: A person forces a field away from Flux with `--force-conflicts`. What happens
+    at the next Flux reconciliation?
+  options:
+  - id: a
+    text: Flux applies again with force and takes the field back.
+    explanation: Correct. Both sides force.
+  - id: b
+    text: Flux gives up the field for good.
+    explanation: Not correct. It does not.
+  - id: c
+    text: The Kustomization is suspended.
+    explanation: Not correct. It is not.
+  - id: d
+    text: The Deployment is recreated.
+    explanation: Not correct. Not for this case.
+  correct_option: a
+  explanation: Correct. Both sides force.
+- id: ats096-040-m02-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Pick the narrowest
+  source_readings:
+  - sections/section-040/module-02/course-04-choosing-the-smallest-exception.md
+  prompt: Which exception is the narrowest?
+  options:
+  - id: a
+    text: "`suspend: true` on the Kustomization."
+    explanation: Not correct. It stops the whole stage.
+  - id: b
+    text: "`reconcile: disabled` on an object."
+    explanation: Not correct. It frees the whole object.
+  - id: c
+    text: "`spec.force: true`."
+    explanation: Not correct. It affects every object.
+  - id: d
+    text: Removing one field from the YAML in Git.
+    explanation: Correct. It frees a single field.
+  correct_option: d
+  explanation: Correct. It frees a single field.

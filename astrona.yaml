@@ -102,8 +102,142 @@ modules:
           - name: "flux build kustomization"
             url: https://fluxcd.io/flux/cmd/flux_build_kustomization/
       - type: reading
-        title: Summary
-        path: sections/section-010/module-01/course-04-summary.md
+        title: "Patch Targets And Image Overrides"
+        path: sections/section-010/module-01/course-04-patch-targets-and-image-overrides.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-01/course-05-summary.md
+
+      - type: reading
+        title: "Build Environments With Kustomize Files"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "Bases And Overlays"
+        path: sections/section-010/module-02/course-01-bases-and-overlays.md
+      - type: reading
+        title: "Images, Replicas And Labels"
+        path: sections/section-010/module-02/course-02-images-replicas-and-labels.md
+      - type: reading
+        title: "Generators And Hash Suffixes"
+        path: sections/section-010/module-02/course-03-generators-and-hash-suffixes.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Roll Pods With A Generated ConfigMap Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: kustomize-build
+        task_kind: build
+        tags: [kustomization, kustomize-file, prune, flux-get, flux-reconcile]
+        learning_goals:
+          - Replace a plain ConfigMap with a configMapGenerator in an overlay
+          - Explain why the hashed name rolls the pods and prunes the old ConfigMap
+          - Prove the rollout with a ready Deployment and a request that returns the new message
+        resources:
+          - name: "Kustomization API"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+          - name: "flux reconcile kustomization"
+            url: https://fluxcd.io/flux/cmd/flux_reconcile_kustomization/
+      - type: reading
+        title: "Components"
+        path: sections/section-010/module-02/course-04-components.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Build Environments With Kustomize Files"
+        path: sections/section-010/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Replacements And Debugging Builds"
+        path: sections/section-010/module-03/course.md
+      - type: reading
+        title: "Replacements"
+        path: sections/section-010/module-03/course-01-replacements.md
+      - type: reading
+        title: "Preview Builds Locally"
+        path: sections/section-010/module-03/course-02-preview-builds-locally.md
+      - type: reading
+        title: "Read Kustomize Controller Errors"
+        path: sections/section-010/module-03/course-03-read-kustomize-controller-errors.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Repair A Build That Uses Replacements Lab"
+        path: sections/section-010/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: kustomize-build
+        task_kind: troubleshooting
+        tags: [kustomization, kustomize-file, flux-build, flux-events, flux-reconcile]
+        learning_goals:
+          - Find a wrong path and a wrong replacement field path from the status and the events
+          - Repair the overlay in Git without using substitution or patches
+          - Prove the fix with a Ready Flux Kustomization and a request that returns the replaced message
+        resources:
+          - name: "flux build kustomization"
+            url: https://fluxcd.io/flux/cmd/flux_build_kustomization/
+          - name: "flux events"
+            url: https://fluxcd.io/flux/cmd/flux_events/
+          - name: "Kustomization API"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+      - type: reading
+        title: "Trace And Debug Workflow"
+        path: sections/section-010/module-03/course-04-trace-and-debug-workflow.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Replacements And Debugging Builds"
+        path: sections/section-010/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Securing And Sourcing Kustomizations"
+        path: sections/section-010/module-04/course.md
+      - type: reading
+        title: "Decrypt Secrets With SOPS And Age"
+        path: sections/section-010/module-04/course-01-decrypt-secrets-with-sops-and-age.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-04/labs/lab-01/question.md
+      - type: lab
+        title: "Decrypt A Secret With SOPS And Age Lab"
+        path: sections/section-010/module-04/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: kustomize-build
+        task_kind: troubleshooting
+        tags: [kustomization, flux-get, flux-events, flux-reconcile]
+        learning_goals:
+          - Find why a Flux Kustomization cannot apply an encrypted Secret
+          - Add a sops decryption block that uses the age key Secret
+          - Prove the fix with a decrypted Secret in the cluster, an encrypted file in Git and a request that returns the message
+        resources:
+          - name: "Mozilla SOPS guide"
+            url: https://fluxcd.io/flux/guides/mozilla-sops/
+          - name: "Kustomization API"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+      - type: reading
+        title: "Impersonate A Service Account"
+        path: sections/section-010/module-04/course-02-impersonate-a-service-account.md
+      - type: reading
+        title: "Source Kinds And Cross-Namespace References"
+        path: sections/section-010/module-04/course-03-source-kinds-and-cross-namespace-refs.md
+      - type: reading
+        title: "Suspend, Resume And Reconcile Controls"
+        path: sections/section-010/module-04/course-04-suspend-resume-and-reconcile-controls.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-04/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Securing And Sourcing Kustomizations"
+        path: sections/section-010/module-04/quiz.yaml
+        pass_score: 70
 
       - type: reading
         title: Question
@@ -140,7 +274,7 @@ modules:
 
     content:
       - type: reading
-        title: Section Overview
+        title: "Section Overview"
         path: sections/section-020/README.md
 
       - type: reading
@@ -156,7 +290,7 @@ modules:
         title: "A Staged Pipeline From Staging To Production"
         path: sections/section-020/module-01/course-03-staged-pipeline.md
       - type: reading
-        title: Question
+        title: "Question"
         path: sections/section-020/module-01/labs/lab-01/question.md
       - type: lab
         title: "Build A Staged Pipeline From Staging To Production Lab"
@@ -178,11 +312,139 @@ modules:
           - name: "Ways of structuring your repositories"
             url: https://fluxcd.io/flux/guides/repository-structure/
       - type: reading
-        title: Summary
-        path: sections/section-020/module-01/course-04-summary.md
+        title: "Diagnosing A Stuck Pipeline"
+        path: sections/section-020/module-01/course-04-diagnosing-a-stuck-pipeline.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-01/course-05-summary.md
 
       - type: reading
-        title: Question
+        title: "Judge Custom Resources With CEL Health Checks"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "Why Custom Resources Need A Health Rule"
+        path: sections/section-020/module-02/course-01-why-custom-resources-need-a-health-rule.md
+      - type: reading
+        title: "Writing healthCheckExprs"
+        path: sections/section-020/module-02/course-02-writing-healthcheckexprs.md
+      - type: reading
+        title: "Testing An Expression"
+        path: sections/section-020/module-02/course-03-testing-an-expression.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Gate A Custom Resource With healthCheckExprs Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: health-checks
+        task_kind: build
+        tags: [health-check-exprs, health-checks, wait, kustomization]
+        learning_goals:
+          - Write healthCheckExprs with inProgress, failed and current for a custom resource
+          - Make a Flux Kustomization wait until the custom resource reports ready
+          - Prove that a failing resource keeps the stage from becoming Ready
+        resources:
+          - name: "Kustomization API: healthCheckExprs"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/#health-check-expressions
+      - type: reading
+        title: "Reusable Expressions"
+        path: sections/section-020/module-02/course-04-reusable-expressions.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Judge Custom Resources With CEL Health Checks"
+        path: sections/section-020/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Control The Reconciliation Lifecycle"
+        path: sections/section-020/module-03/course.md
+      - type: reading
+        title: "Interval, Timeout And Retry"
+        path: sections/section-020/module-03/course-01-interval-timeout-and-retry.md
+      - type: reading
+        title: "Suspend And Resume"
+        path: sections/section-020/module-03/course-02-suspend-and-resume.md
+      - type: reading
+        title: "Requesting A Reconciliation"
+        path: sections/section-020/module-03/course-03-requesting-a-reconciliation.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Resume And Tune A Suspended Stage Lab"
+        path: sections/section-020/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: health-checks
+        task_kind: troubleshooting
+        tags: [depends-on, timeout, flux-reconcile, kustomization]
+        learning_goals:
+          - Find why a stage is suspended and resume it
+          - Tune the interval, retry interval and timeout of a stage
+          - Prove that the stage becomes Ready and the pipeline moves on
+        resources:
+          - name: "Kustomization API: suspend and reconcile"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+      - type: reading
+        title: "Reading The Status Of A Run"
+        path: sections/section-020/module-03/course-04-reading-the-status-of-a-run.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Control The Reconciliation Lifecycle"
+        path: sections/section-020/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Order Kustomizations Around HelmReleases And CRDs"
+        path: sections/section-020/module-04/course.md
+      - type: reading
+        title: "The Problem Of Order Across Kinds"
+        path: sections/section-020/module-04/course-01-the-problem-of-order-across-kinds.md
+      - type: reading
+        title: "A HelmRelease Inside A Gated Kustomization"
+        path: sections/section-020/module-04/course-02-a-helmrelease-inside-a-gated-kustomization.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-04/labs/lab-01/question.md
+      - type: lab
+        title: "Order A Chart Before Its Consumer Lab"
+        path: sections/section-020/module-04/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: dependencies
+        task_kind: build
+        tags: [depends-on, helmrelease, staged-rollout, kustomization]
+        learning_goals:
+          - Order a Flux Kustomization after a HelmRelease that installs the chart
+          - Make the dependency wait for the release to be Ready
+          - Prove the order with the Ready times of both objects
+        resources:
+          - name: "Kustomization API: dependsOn"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/#dependencies
+          - name: "HelmRelease API"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/
+      - type: reading
+        title: "Ordering HelmRelease Objects"
+        path: sections/section-020/module-04/course-03-ordering-helmrelease-objects.md
+      - type: reading
+        title: "CRDs And Their Custom Resources"
+        path: sections/section-020/module-04/course-04-crds-and-their-custom-resources.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-04/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Order Kustomizations Around HelmReleases And CRDs"
+        path: sections/section-020/module-04/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Question"
         path: sections/section-020/capstone/labs/lab-01/question.md
       - type: lab
         title: "Unblock A Stuck Delivery Pipeline Capstone"
@@ -217,7 +479,7 @@ modules:
 
     content:
       - type: reading
-        title: Section Overview
+        title: "Section Overview"
         path: sections/section-030/README.md
 
       - type: reading
@@ -233,7 +495,7 @@ modules:
         title: "Failed Upgrades, Remediation And Rollback"
         path: sections/section-030/module-01/course-03-remediation-and-rollback.md
       - type: reading
-        title: Question
+        title: "Question"
         path: sections/section-030/module-01/labs/lab-01/question.md
       - type: lab
         title: "Override A Chart Per Environment And Survive A Bad Upgrade Lab"
@@ -255,11 +517,139 @@ modules:
           - name: "HelmRepository API"
             url: https://fluxcd.io/flux/components/source/helmrepositories/
       - type: reading
-        title: Summary
-        path: sections/section-030/module-01/course-04-summary.md
+        title: "Reading Release History And Status"
+        path: sections/section-030/module-01/course-04-reading-release-history.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-01/course-05-summary.md
 
       - type: reading
-        title: Question
+        title: "Choose And Pin Chart Sources"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "The HelmChart Between Source And Release"
+        path: sections/section-030/module-02/course-01-the-helmchart-between-source-and-release.md
+      - type: reading
+        title: "Versions And Reconcile Strategy"
+        path: sections/section-030/module-02/course-02-versions-and-reconcile-strategy.md
+      - type: reading
+        title: "Charts From Git"
+        path: sections/section-030/module-02/course-03-charts-from-git.md
+      - type: reading
+        title: "Question"
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Install A Chart From Git With A Values File Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: helm-release
+        task_kind: build
+        tags: [helmrelease, helmrepository, chart-ref, values-from]
+        learning_goals:
+          - Install a chart from a GitRepository with a values file
+          - Select the values file for one environment
+          - Prove the release is Ready and renders the staging values
+        resources:
+          - name: "HelmChart API"
+            url: https://fluxcd.io/flux/components/source/helmcharts/
+          - name: "HelmRelease API: chart template"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/
+      - type: reading
+        title: "Verifying And Authenticating Charts"
+        path: sections/section-030/module-02/course-04-verifying-and-authenticating-charts.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Choose And Pin Chart Sources"
+        path: sections/section-030/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Values And Post-Rendering"
+        path: sections/section-030/module-03/course.md
+      - type: reading
+        title: "Values From ConfigMaps And Secrets"
+        path: sections/section-030/module-03/course-01-values-from-configmaps-and-secrets.md
+      - type: reading
+        title: "Merge Order And Precedence"
+        path: sections/section-030/module-03/course-02-merge-order-and-precedence.md
+      - type: reading
+        title: "Post-Renderers"
+        path: sections/section-030/module-03/course-03-post-renderers.md
+      - type: reading
+        title: "Question"
+        path: sections/section-030/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Take Values From A ConfigMap And Patch The Output Lab"
+        path: sections/section-030/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: helm-release
+        task_kind: build
+        tags: [helmrelease, values-from, helm-storage, kustomization]
+        learning_goals:
+          - Take a value from a ConfigMap with valuesFrom and a targetPath
+          - Patch the rendered output with a post renderer
+          - Prove the rendered object carries both changes
+        resources:
+          - name: "HelmRelease API: values and post renderers"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/
+      - type: reading
+        title: "Helm Tests And Inspecting The Output"
+        path: sections/section-030/module-03/course-04-helm-tests-and-inspecting-the-output.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Values And Post-Rendering"
+        path: sections/section-030/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Install, Upgrade And Uninstall Options"
+        path: sections/section-030/module-04/course.md
+      - type: reading
+        title: "Names And Namespaces"
+        path: sections/section-030/module-04/course-01-names-and-namespaces.md
+      - type: reading
+        title: "History And Timeouts"
+        path: sections/section-030/module-04/course-02-history-and-timeouts.md
+      - type: reading
+        title: "Question"
+        path: sections/section-030/module-04/labs/lab-01/question.md
+      - type: lab
+        title: "Install Into A New Namespace With Separate Storage Lab"
+        path: sections/section-030/module-04/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: helm-release
+        task_kind: build
+        tags: [helmrelease, helm-storage, timeout, rollback]
+        learning_goals:
+          - Install a release into a new namespace with a separate storage namespace
+          - Set the release name, history limit and timeout
+          - Prove the release exists in the right namespaces and is Ready
+        resources:
+          - name: "HelmRelease API: install and upgrade options"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/
+      - type: reading
+        title: "Upgrades And Definitions"
+        path: sections/section-030/module-04/course-03-upgrades-and-definitions.md
+      - type: reading
+        title: "Uninstalling A Release"
+        path: sections/section-030/module-04/course-04-uninstalling-a-release.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-04/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Install, Upgrade And Uninstall Options"
+        path: sections/section-030/module-04/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Question"
         path: sections/section-030/capstone/labs/lab-01/question.md
       - type: lab
         title: "Repair Two Helm Releases Capstone"
@@ -293,7 +683,7 @@ modules:
 
     content:
       - type: reading
-        title: Section Overview
+        title: "Section Overview"
         path: sections/section-040/README.md
 
       - type: reading
@@ -309,7 +699,7 @@ modules:
         title: "Drift Detection In helm-controller"
         path: sections/section-040/module-01/course-03-helm-drift-detection.md
       - type: reading
-        title: Question
+        title: "Question"
         path: sections/section-040/module-01/labs/lab-01/question.md
       - type: lab
         title: "Make Helm Correct Drift Without Touching Tuned Fields Lab"
@@ -329,11 +719,139 @@ modules:
           - name: "Manage Helm releases"
             url: https://fluxcd.io/flux/guides/helmreleases/
       - type: reading
-        title: Summary
-        path: sections/section-040/module-01/course-04-summary.md
+        title: "Seeing Drift Before You Fix It"
+        path: sections/section-040/module-01/course-04-seeing-drift-before-fixing-it.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-01/course-05-summary.md
 
       - type: reading
-        title: Question
+        title: "Share Fields Between Flux And Other Controllers"
+        path: sections/section-040/module-02/course.md
+      - type: reading
+        title: "Reading Field Ownership"
+        path: sections/section-040/module-02/course-01-reading-field-ownership.md
+      - type: reading
+        title: "Letting Another Writer Own A Field"
+        path: sections/section-040/module-02/course-02-letting-another-writer-own-a-field.md
+      - type: reading
+        title: "Question"
+        path: sections/section-040/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Let An Autoscaler Own The Replicas Lab"
+        path: sections/section-040/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: drift
+        task_kind: build
+        tags: [server-side-apply, drift-correction, prune, kustomization]
+        learning_goals:
+          - Remove a field from Git so Flux stops owning it
+          - Let another field manager write the replicas
+          - Prove that the value survives a reconciliation and the stage stays Ready
+        resources:
+          - name: "Kustomization API: server-side apply"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/
+          - name: "Kubernetes server-side apply"
+            url: https://kubernetes.io/docs/reference/using-api/server-side-apply/
+      - type: reading
+        title: "Conflicts And Forced Changes"
+        path: sections/section-040/module-02/course-03-conflicts-and-forced-changes.md
+      - type: reading
+        title: "Choosing The Smallest Exception"
+        path: sections/section-040/module-02/course-04-choosing-the-smallest-exception.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Share Fields Between Flux And Other Controllers"
+        path: sections/section-040/module-02/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Move And Remove Objects Safely"
+        path: sections/section-040/module-03/course.md
+      - type: reading
+        title: "The Inventory In Detail"
+        path: sections/section-040/module-03/course-01-the-inventory-in-detail.md
+      - type: reading
+        title: "What Pruning Deletes And What It Skips"
+        path: sections/section-040/module-03/course-02-what-pruning-deletes-and-what-it-skips.md
+      - type: reading
+        title: "Moving An Object Between Stages"
+        path: sections/section-040/module-03/course-03-moving-an-object-between-stages.md
+      - type: reading
+        title: "Question"
+        path: sections/section-040/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Move An Object Between Stages Without Recreating It Lab"
+        path: sections/section-040/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: drift
+        task_kind: migration
+        tags: [prune, inventory, deletion-policy, kustomization]
+        learning_goals:
+          - Move an object between two Flux Kustomizations with two commits
+          - Keep pruning on for both stages
+          - Prove that the UID of the object did not change
+        resources:
+          - name: "Kustomization API: garbage collection"
+            url: https://fluxcd.io/flux/components/kustomize/kustomizations/#garbage-collection
+      - type: reading
+        title: "Deleting A Stage"
+        path: sections/section-040/module-03/course-04-deleting-a-stage.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Move And Remove Objects Safely"
+        path: sections/section-040/module-03/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Helm Drift And Field Ownership"
+        path: sections/section-040/module-04/course.md
+      - type: reading
+        title: "What helm-controller Compares"
+        path: sections/section-040/module-04/course-01-what-helm-controller-compares.md
+      - type: reading
+        title: "Writing Ignore Rules"
+        path: sections/section-040/module-04/course-02-writing-ignore-rules.md
+      - type: reading
+        title: "Sharing Fields With An Autoscaler"
+        path: sections/section-040/module-04/course-03-sharing-fields-with-an-autoscaler.md
+      - type: reading
+        title: "Question"
+        path: sections/section-040/module-04/labs/lab-01/question.md
+      - type: lab
+        title: "Let An Autoscaler Own Replicas In A Helm Release Lab"
+        path: sections/section-040/module-04/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: drift
+        task_kind: build
+        tags: [drift-detection, drift-correction, helmrelease, flux-reconcile]
+        learning_goals:
+          - Add an ignore rule for the replicas of a Deployment
+          - Keep drift correction on for every other field
+          - Prove both behaviors with hand-made changes
+        resources:
+          - name: "HelmRelease API: drift detection"
+            url: https://fluxcd.io/flux/components/helm/helmreleases/#drift-detection
+      - type: reading
+        title: "Choosing A Drift Policy"
+        path: sections/section-040/module-04/course-04-choosing-a-drift-policy.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-040/module-04/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Helm Drift And Field Ownership"
+        path: sections/section-040/module-04/quiz.yaml
+        pass_score: 70
+
+      - type: reading
+        title: "Question"
         path: sections/section-040/capstone/labs/lab-01/question.md
       - type: lab
         title: "Keep Two Environments Equal To Git Capstone"

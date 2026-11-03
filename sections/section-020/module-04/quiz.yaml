@@ -1,0 +1,242 @@
+# Knowledge check for module 04 of section 020. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-020-m04
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-04
+  title: Order Kustomizations Around HelmReleases And CRDs
+placement:
+  position: after
+  reading: sections/section-020/module-04/course-05-summary.md
+questions:
+- id: ats096-020-m04-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State what dependsOn orders
+  source_readings:
+  - sections/section-020/module-04/course-01-the-problem-of-order-across-kinds.md
+  prompt: Which objects can `dependsOn` of a Flux `Kustomization` name?
+  options:
+  - id: a
+    text: Other Flux `Kustomization` objects.
+    explanation: Correct. dependsOn works within one kind.
+  - id: b
+    text: "`HelmRelease` objects."
+    explanation: Not correct. Across kinds it does not work.
+  - id: c
+    text: Deployments.
+    explanation: Not correct. It does not point at workloads.
+  - id: d
+    text: Namespaces.
+    explanation: Not correct. It does not point at namespaces.
+  correct_option: a
+  explanation: Correct. dependsOn works within one kind.
+- id: ats096-020-m04-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the bridge between kinds
+  source_readings:
+  - sections/section-020/module-04/course-01-the-problem-of-order-across-kinds.md
+  prompt: What lets a Kustomization wait for a chart that a HelmRelease installs?
+  options:
+  - id: a
+    text: "`dependsOn` pointing at the HelmRelease."
+    explanation: Not correct. Kinds do not match.
+  - id: b
+    text: A longer `interval`.
+    explanation: Not correct. Interval is not a gate.
+  - id: c
+    text: "`prune: true`."
+    explanation: Not correct. Prune does not wait.
+  - id: d
+    text: "`wait: true` on the Kustomization that applies the HelmRelease."
+    explanation: Correct. Health makes the HelmRelease gate the stage.
+  correct_option: d
+  explanation: Correct. Health makes the HelmRelease gate the stage.
+- id: ats096-020-m04-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Size the timeout
+  source_readings:
+  - sections/section-020/module-04/course-02-a-helmrelease-inside-a-gated-kustomization.md
+  prompt: Why does a gated chart stage need a generous `timeout`?
+  options:
+  - id: a
+    text: Because the timeout is the interval of the release.
+    explanation: Not correct. They are separate fields.
+  - id: b
+    text: Because Helm needs it to unpack the chart.
+    explanation: Not correct. Helm has its own timeout.
+  - id: c
+    text: The timeout must cover the chart install, or the stage fails while the release
+      is still working.
+    explanation: Correct. The health check waits within the timeout.
+  - id: d
+    text: Because a short timeout deletes the release.
+    explanation: Not correct. It only fails the check.
+  correct_option: c
+  explanation: Correct. The health check waits within the timeout.
+- id: ats096-020-m04-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read a gated stage
+  source_readings:
+  - sections/section-020/module-04/course-02-a-helmrelease-inside-a-gated-kustomization.md
+  prompt: 'The chart stage is `Ready: False` while its HelmRelease installs. What
+    does the stage that depends on it do?'
+  options:
+  - id: a
+    text: It applies at once.
+    explanation: Not correct. That would ignore dependsOn.
+  - id: b
+    text: It waits and is not applied.
+    explanation: Correct. dependsOn needs the stage to be Ready.
+  - id: c
+    text: It is deleted.
+    explanation: Not correct. Waiting does not delete.
+  - id: d
+    text: It installs the chart itself.
+    explanation: Not correct. It only applies its own folder.
+  correct_option: b
+  explanation: Correct. dependsOn needs the stage to be Ready.
+- id: ats096-020-m04-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Order HelmReleases
+  source_readings:
+  - sections/section-020/module-04/course-03-ordering-helmrelease-objects.md
+  prompt: How does one `HelmRelease` wait for another?
+  options:
+  - id: a
+    text: "`spec.dependsOn` with the name and namespace of the other release."
+    explanation: Correct. helm-controller reads their Ready condition.
+  - id: b
+    text: "`spec.chart.spec.dependsOn`."
+    explanation: Not correct. That field does not exist.
+  - id: c
+    text: "`spec.wait`."
+    explanation: Not correct. That is not an ordering field.
+  - id: d
+    text: An annotation on the namespace.
+    explanation: Not correct. Annotations do not order releases.
+  correct_option: a
+  explanation: Correct. helm-controller reads their Ready condition.
+- id: ats096-020-m04-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read a waiting release
+  source_readings:
+  - sections/section-020/module-04/course-03-ordering-helmrelease-objects.md
+  prompt: Which reason does a HelmRelease show while it waits for a dependency?
+  options:
+  - id: a
+    text: "`UpgradeFailed`"
+    explanation: Not correct. That is for failed upgrades.
+  - id: b
+    text: "`ChartPullError`"
+    explanation: Not correct. That is for the chart source.
+  - id: c
+    text: "`Suspended`"
+    explanation: Not correct. Suspend is a different state.
+  - id: d
+    text: "`DependencyNotReady`"
+    explanation: Correct. It shows the dependency that is not ready.
+  correct_option: d
+  explanation: Correct. It shows the dependency that is not ready.
+- id: ats096-020-m04-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Choose a level
+  source_readings:
+  - sections/section-020/module-04/course-03-ordering-helmrelease-objects.md
+  prompt: When is stage ordering a better fit than release ordering?
+  options:
+  - id: a
+    text: For two Pods in one chart.
+    explanation: Not correct. That is Kubernetes, not Flux.
+  - id: b
+    text: For ordering hooks.
+    explanation: Not correct. Hooks are a Helm feature.
+  - id: c
+    text: For the big picture, such as infrastructure before apps.
+    explanation: Correct. Stages order whole folders.
+  - id: d
+    text: For ordering commits.
+    explanation: Not correct. Commits are not ordered by Flux.
+  correct_option: c
+  explanation: Correct. Stages order whole folders.
+- id: ats096-020-m04-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Spot the missing definition
+  source_readings:
+  - sections/section-020/module-04/course-04-crds-and-their-custom-resources.md
+  prompt: An object of a kind is applied before its definition exists. What error
+    does the apply give?
+  options:
+  - id: a
+    text: Forbidden.
+    explanation: Not correct. That is an authorization error.
+  - id: b
+    text: No matches for the kind.
+    explanation: Correct. The API server does not know the kind yet.
+  - id: c
+    text: Invalid value.
+    explanation: Not correct. The object is not invalid.
+  - id: d
+    text: Conflict.
+    explanation: Not correct. There is no conflict.
+  correct_option: b
+  explanation: Correct. The API server does not know the kind yet.
+- id: ats096-020-m04-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Split definitions from objects
+  source_readings:
+  - sections/section-020/module-04/course-04-crds-and-their-custom-resources.md
+  prompt: When must a definition and its objects be in separate Flux Kustomization
+    objects?
+  options:
+  - id: a
+    text: When the definition comes from a chart or another folder and must be established
+      first.
+    explanation: Correct. The first stage applies the definition and waits.
+  - id: b
+    text: Always.
+    explanation: Not correct. In one folder they can share a stage.
+  - id: c
+    text: Never.
+    explanation: Not correct. Definitions from a chart need a separate stage.
+  - id: d
+    text: Only when prune is off.
+    explanation: Not correct. Prune does not decide this.
+  correct_option: a
+  explanation: Correct. The first stage applies the definition and waits.
+- id: ats096-020-m04-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the cost of deleting a definition
+  source_readings:
+  - sections/section-020/module-04/course-04-crds-and-their-custom-resources.md
+  prompt: What happens when a definition is deleted from Git and pruned?
+  options:
+  - id: a
+    text: Only the definition is deleted.
+    explanation: Not correct. The cluster removes the objects too.
+  - id: b
+    text: Nothing, as objects are kept.
+    explanation: Not correct. They are removed.
+  - id: c
+    text: The objects are archived.
+    explanation: Not correct. Kubernetes does not archive.
+  - id: d
+    text: Every object of that kind is deleted.
+    explanation: Correct. Deleting a definition deletes its objects.
+  correct_option: d
+  explanation: Correct. Deleting a definition deletes its objects.

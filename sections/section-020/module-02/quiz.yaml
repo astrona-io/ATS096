@@ -1,0 +1,246 @@
+# Knowledge check for module 02 of section 020. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-020-m02
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-02
+  title: Judge Custom Resources With CEL Health Checks
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-05-summary.md
+questions:
+- id: ats096-020-m02-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain how Flux judges a custom resource without a rule
+  source_readings:
+  - sections/section-020/module-02/course-01-why-custom-resources-need-a-health-rule.md
+  prompt: A custom resource has no `Ready` condition and no `status` field. What does
+    kustomize-controller conclude when it checks it?
+  options:
+  - id: a
+    text: It calls the object healthy, because it finds no sign of a problem.
+    explanation: Correct. The default rule treats an object without a Ready condition
+      as healthy.
+  - id: b
+    text: It calls the object failed, because the status is missing.
+    explanation: Not correct. Missing status is not read as failure.
+  - id: c
+    text: It waits until the timeout and then fails.
+    explanation: Not correct. There is nothing to wait for under the default rule.
+  - id: d
+    text: It skips the check and leaves the Ready condition unset.
+    explanation: Not correct. The check runs and returns healthy.
+  correct_option: a
+  explanation: Correct. The default rule treats an object without a Ready condition
+    as healthy.
+- id: ats096-020-m02-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the field that carries a health rule
+  source_readings:
+  - sections/section-020/module-02/course-01-why-custom-resources-need-a-health-rule.md
+  prompt: Which field of a Flux `Kustomization` holds CEL rules for custom kinds?
+  options:
+  - id: a
+    text: "`spec.healthChecks`"
+    explanation: Not correct. That list names objects, it does not hold rules.
+  - id: b
+    text: "`spec.postBuild`"
+    explanation: Not correct. postBuild replaces variables.
+  - id: c
+    text: "`spec.patches`"
+    explanation: Not correct. Patches change objects, not health rules.
+  - id: d
+    text: "`spec.healthCheckExprs`"
+    explanation: Correct. healthCheckExprs is the list of per-kind rules.
+  correct_option: d
+  explanation: Correct. healthCheckExprs is the list of per-kind rules.
+- id: ats096-020-m02-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Order the three expressions
+  source_readings:
+  - sections/section-020/module-02/course-02-writing-healthcheckexprs.md
+  prompt: In which order does kustomize-controller try the expressions of an entry?
+  options:
+  - id: a
+    text: "`current`, then `inProgress`, then `failed`."
+    explanation: Not correct. current is tried last.
+  - id: b
+    text: "`failed`, then `current`, then `inProgress`."
+    explanation: Not correct. inProgress is tried first.
+  - id: c
+    text: "`inProgress`, then `failed`, then `current`; the first true one decides."
+    explanation: Correct. That is the documented order.
+  - id: d
+    text: All three are tried and the majority decides.
+    explanation: Not correct. The first true expression decides.
+  correct_option: c
+  explanation: Correct. That is the documented order.
+- id: ats096-020-m02-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know which expression is required
+  source_readings:
+  - sections/section-020/module-02/course-02-writing-healthcheckexprs.md
+  prompt: Which expression must an entry of `healthCheckExprs` have?
+  options:
+  - id: a
+    text: "`inProgress`"
+    explanation: Not correct. It is optional.
+  - id: b
+    text: "`current`"
+    explanation: Correct. At least current is required.
+  - id: c
+    text: "`failed`"
+    explanation: Not correct. It is optional.
+  - id: d
+    text: All three
+    explanation: Not correct. Only current is required.
+  correct_option: b
+  explanation: Correct. At least current is required.
+- id: ats096-020-m02-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain why failed matters
+  source_readings:
+  - sections/section-020/module-02/course-02-writing-healthcheckexprs.md
+  prompt: What does a true `failed` expression change during a health check?
+  options:
+  - id: a
+    text: The check stops at once with the reason `HealthCheckFailed`, without waiting
+      for `timeout`.
+    explanation: Correct. Failed ends the wait early.
+  - id: b
+    text: The object is deleted and applied again.
+    explanation: Not correct. Nothing is deleted.
+  - id: c
+    text: The check is retried with a longer timeout.
+    explanation: Not correct. The timeout is not changed.
+  - id: d
+    text: The Kustomization is suspended.
+    explanation: Not correct. Suspend is set by hand only.
+  correct_option: a
+  explanation: Correct. Failed ends the wait early.
+- id: ats096-020-m02-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Combine healthChecks and wait
+  source_readings:
+  - sections/section-020/module-02/course-02-writing-healthcheckexprs.md
+  prompt: 'A Flux `Kustomization` has `wait: true` and a `healthChecks` list. What
+    happens to the list?'
+  options:
+  - id: a
+    text: It is used and `wait` is ignored.
+    explanation: Not correct. Wait wins.
+  - id: b
+    text: Both lists are merged.
+    explanation: Not correct. There is no merge.
+  - id: c
+    text: The apply is rejected.
+    explanation: Not correct. The combination is accepted.
+  - id: d
+    text: It is ignored, and every applied object is judged.
+    explanation: Correct. With wait true the list is not used.
+  correct_option: d
+  explanation: Correct. With wait true the list is not used.
+- id: ats096-020-m02-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Protect against missing fields
+  source_readings:
+  - sections/section-020/module-02/course-02-writing-healthcheckexprs.md
+  prompt: Why does the expression start with `has(status.phase)`?
+  options:
+  - id: a
+    text: It makes the expression faster.
+    explanation: Not correct. It is about correctness.
+  - id: b
+    text: It converts the value to a string.
+    explanation: Not correct. It returns true or false.
+  - id: c
+    text: Reading a field that does not exist is an error in CEL, and `has()` avoids
+      it.
+    explanation: Correct. has() tests for the field first.
+  - id: d
+    text: It subscribes to status changes.
+    explanation: Not correct. CEL has no subscriptions.
+  correct_option: c
+  explanation: Correct. has() tests for the field first.
+- id: ats096-020-m02-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Test a rule by hand
+  source_readings:
+  - sections/section-020/module-02/course-03-testing-an-expression.md
+  prompt: How does a learner play the controller and set `status.phase` of a Widget
+    by hand?
+  options:
+  - id: a
+    text: "`kubectl edit` of the spec."
+    explanation: Not correct. The spec does not hold status.
+  - id: b
+    text: "`kubectl patch --subresource=status` on the Widget."
+    explanation: Correct. The status subresource is patched.
+  - id: c
+    text: "`flux reconcile` on the Widget."
+    explanation: Not correct. flux reconcile does not write status.
+  - id: d
+    text: "`kubectl label` on the Widget."
+    explanation: Not correct. Labels are not status.
+  correct_option: b
+  explanation: Correct. The status subresource is patched.
+- id: ats096-020-m02-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Test both outcomes
+  source_readings:
+  - sections/section-020/module-02/course-03-testing-an-expression.md
+  prompt: What is a complete test of a health rule?
+  options:
+  - id: a
+    text: Set a healthy value and see Ready, then set a value that must fail and see
+      the failure.
+    explanation: Correct. Both outcomes prove the rule.
+  - id: b
+    text: Only the healthy value.
+    explanation: Not correct. A rule that always passes would look fine.
+  - id: c
+    text: Only the failing value.
+    explanation: Not correct. The healthy case is also needed.
+  - id: d
+    text: Read the YAML carefully.
+    explanation: Not correct. The behavior must be observed.
+  correct_option: a
+  explanation: Correct. Both outcomes prove the rule.
+- id: ats096-020-m02-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Guard against a stale status
+  source_readings:
+  - sections/section-020/module-02/course-04-reusable-expressions.md
+  prompt: What does comparing `status.observedGeneration` with `metadata.generation`
+    protect against?
+  options:
+  - id: a
+    text: A missing CRD.
+    explanation: Not correct. That is a different error.
+  - id: b
+    text: A wrong apiVersion.
+    explanation: Not correct. The group decides the match.
+  - id: c
+    text: A slow network.
+    explanation: Not correct. It is about the object, not the network.
+  - id: d
+    text: Judging an old status that does not yet reflect the latest spec.
+    explanation: Correct. A stale status is not a proof of health.
+  correct_option: d
+  explanation: Correct. A stale status is not a proof of health.

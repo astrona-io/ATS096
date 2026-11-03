@@ -1,0 +1,245 @@
+# Knowledge check for module 03 of section 010. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-010-m03
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-03
+  title: "Replacements And Debugging Builds"
+placement:
+  position: after
+  reading: sections/section-010/module-03/labs/lab-01/question.md
+questions:
+  - id: ats096-010-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe what a replacement does"
+    source_readings:
+      - sections/section-010/module-03/course-01-replacements.md
+    prompt: "What does an entry in the `replacements` field of a Kustomize file do?"
+    options:
+      - id: a
+        text: "It replaces `${variables}` with values from a ConfigMap in the cluster."
+        explanation: "Not correct. That is variable substitution in the Flux `Kustomization`."
+      - id: b
+        text: "It copies a value from a source object into fields of target objects during the build."
+        explanation: "Correct. Both objects must be in the build."
+      - id: c
+        text: "It replaces a Deployment in the cluster with a new one."
+        explanation: "Not correct. A replacement changes built YAML, not live objects."
+      - id: d
+        text: "It renames the Flux `Kustomization`."
+        explanation: "Not correct. Replacements do not touch Flux objects."
+    correct_option: b
+    explanation: "Correct. A replacement copies a value inside the build."
+
+  - id: ats096-010-m03-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write a field path with a list selector"
+    source_readings:
+      - sections/section-010/module-03/course-01-replacements.md
+    prompt: "Which `fieldPath` sets the value of the env var `PODINFO_UI_MESSAGE` of the container `podinfo`?"
+    options:
+      - id: a
+        text: "`spec.template.spec.containers.0.env.0.value`"
+        explanation: "Not correct. A position breaks when the order changes, and it is not the form the lesson teaches."
+      - id: b
+        text: "`spec.template.spec.containers.[name=podinfo].env.[name=PODINFO_UI_MESSAGE].value`"
+        explanation: "Correct. Square brackets pick list items by name."
+      - id: c
+        text: "`env.PODINFO_UI_MESSAGE`"
+        explanation: "Not correct. The path starts at the root of the object."
+      - id: d
+        text: "`data.PODINFO_UI_MESSAGE`"
+        explanation: "Not correct. `data` belongs to a ConfigMap, not to a Deployment."
+    correct_option: b
+    explanation: "Correct. Use `[name=...]` for list items."
+
+  - id: ats096-010-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose between replacements and substitution"
+    source_readings:
+      - sections/section-010/module-03/course-01-replacements.md
+    prompt: "A value must come from the cluster name, which differs per cluster and is not in the repository. Which tool fits?"
+    options:
+      - id: a
+        text: "A replacement, because it reads live objects."
+        explanation: "Not correct. A replacement cannot read the cluster."
+      - id: b
+        text: "`images` in the Kustomize file."
+        explanation: "Not correct. `images` changes image names only."
+      - id: c
+        text: "Variable substitution with `postBuild`."
+        explanation: "Correct. Substitution brings in values from outside the build."
+      - id: d
+        text: "A component."
+        explanation: "Not correct. A component packages a change; it does not supply a value from outside."
+    correct_option: c
+    explanation: "Correct. Replacements copy between objects in the build only."
+
+  - id: ats096-010-m03-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Compare the three preview commands"
+    source_readings:
+      - sections/section-010/module-03/course-02-preview-builds-locally.md
+    prompt: "Which command prints the build of a folder without any Flux fields applied?"
+    options:
+      - id: a
+        text: "`flux build kustomization <name> --path <folder>`"
+        explanation: "Not correct. This applies the fields of the Flux `Kustomization` too."
+      - id: b
+        text: "`flux diff kustomization <name> --path <folder>`"
+        explanation: "Not correct. This compares the build with the cluster."
+      - id: c
+        text: "`flux get kustomizations`"
+        explanation: "Not correct. This lists objects; it builds nothing."
+      - id: d
+        text: "`kubectl kustomize <folder>`"
+        explanation: "Correct. It runs only the Kustomize build."
+    correct_option: d
+    explanation: "Correct. Only `kubectl kustomize` skips the Flux fields."
+
+  - id: ats096-010-m03-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the exit code of flux diff"
+    source_readings:
+      - sections/section-010/module-03/course-02-preview-builds-locally.md
+    prompt: "What exit code does `flux diff kustomization` return when the build would change the cluster?"
+    options:
+      - id: a
+        text: "`1`"
+        explanation: "Correct. `0` means no differences, `1` means differences."
+      - id: b
+        text: "`0`"
+        explanation: "Not correct. `0` means no differences."
+      - id: c
+        text: "`2`"
+        explanation: "Not correct. The lesson names `0` and `1` only."
+      - id: d
+        text: "It never sets an exit code."
+        explanation: "Not correct. The exit code is what makes it usable in a pipeline."
+    correct_option: a
+    explanation: "Correct. Differences give `1`."
+
+  - id: ats096-010-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Catch missing variables"
+    source_readings:
+      - sections/section-010/module-03/course-02-preview-builds-locally.md
+    prompt: "Which flag turns a `${name}` without a value or default into an error during `flux build`?"
+    options:
+      - id: a
+        text: "`--strict-substitute`"
+        explanation: "Correct. Without it, the variable becomes an empty string."
+      - id: b
+        text: "`--dry-run`"
+        explanation: "Not correct. `--dry-run` builds without cluster access."
+      - id: c
+        text: "`--path`"
+        explanation: "Not correct. `--path` selects the folder."
+      - id: d
+        text: "`--kustomization-file`"
+        explanation: "Not correct. This names the Flux object file."
+    correct_option: a
+    explanation: "Correct. `--strict-substitute` makes a missing value an error."
+
+  - id: ats096-010-m03-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Match a reason to a step"
+    source_readings:
+      - sections/section-010/module-03/course-03-read-kustomize-controller-errors.md
+    prompt: "A Flux `Kustomization` shows the reason `BuildFailed`. Where do you start?"
+    options:
+      - id: a
+        text: "Check that the namespace has enough quota."
+        explanation: "Not correct. That points to an apply failure."
+      - id: b
+        text: "Run `flux resume` on the object."
+        explanation: "Not correct. Resuming does not fix a build error."
+      - id: c
+        text: "Delete the `GitRepository`."
+        explanation: "Not correct. The source is not the reported problem."
+      - id: d
+        text: "Reproduce the build on your machine with `kubectl kustomize` or `flux build`."
+        explanation: "Correct. The failed step is the Kustomize build or the substitution."
+    correct_option: d
+    explanation: "Correct. A build error is reproduced locally."
+
+  - id: ats096-010-m03-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the two revisions"
+    source_readings:
+      - sections/section-010/module-03/course-03-read-kustomize-controller-errors.md
+    prompt: "A new commit breaks the build. What do `lastAttemptedRevision` and `lastAppliedRevision` show?"
+    options:
+      - id: a
+        text: "Both show the new commit."
+        explanation: "Not correct. The applied revision only changes after a successful apply."
+      - id: b
+        text: "Both show the last good commit."
+        explanation: "Not correct. The attempted revision records the revision that was tried."
+      - id: c
+        text: "The attempted revision is the new commit; the applied revision is the last good commit."
+        explanation: "Correct. The last good objects keep running."
+      - id: d
+        text: "The applied revision is empty after any failure."
+        explanation: "Not correct. It keeps the last revision that worked."
+    correct_option: c
+    explanation: "Correct. The two revisions differ after a failed build."
+
+  - id: ats096-010-m03-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Reconcile with the newest commit"
+    source_readings:
+      - sections/section-010/module-03/course-03-read-kustomize-controller-errors.md
+    prompt: "After you push a fix, which command makes sure the newest commit is built?"
+    options:
+      - id: a
+        text: "`flux reconcile kustomization <name>`"
+        explanation: "Not correct. This reconciles with the artifact Flux already has."
+      - id: b
+        text: "`flux reconcile kustomization <name> --with-source`"
+        explanation: "Correct. It fetches the source before it reconciles."
+      - id: c
+        text: "`flux get kustomizations`"
+        explanation: "Not correct. This only lists the objects."
+      - id: d
+        text: "`kubectl rollout restart deployment`"
+        explanation: "Not correct. A restart does not fetch a commit."
+    correct_option: b
+    explanation: "Correct. `--with-source` fetches the source first."
+
+  - id: ats096-010-m03-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Walk back from a live object"
+    source_readings:
+      - sections/section-010/module-03/course-04-trace-and-debug-workflow.md
+    prompt: "You want to know which Flux `Kustomization` and which Git commit produced the Deployment `podinfo`. Which command answers it?"
+    options:
+      - id: a
+        text: "`kubectl kustomize podinfo`"
+        explanation: "Not correct. This builds a folder."
+      - id: b
+        text: "`flux trace podinfo --kind deployment --api-version apps/v1 --namespace podinfo-staging`"
+        explanation: "Correct. It follows the Flux labels to the Flux `Kustomization` and the source."
+      - id: c
+        text: "`flux diff kustomization podinfo`"
+        explanation: "Not correct. This compares a build with the cluster."
+      - id: d
+        text: "`flux logs --level=error`"
+        explanation: "Not correct. Logs do not walk back from an object."
+    correct_option: b
+    explanation: "Correct. `flux trace` starts from the live object."

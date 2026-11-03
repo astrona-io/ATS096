@@ -1,0 +1,245 @@
+# Knowledge check for module 04 of section 010. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-010-m04
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-04
+  title: "Securing And Sourcing Kustomizations"
+placement:
+  position: after
+  reading: sections/section-010/module-04/labs/lab-01/question.md
+questions:
+  - id: ats096-010-m04-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain why Secrets are encrypted in Git"
+    source_readings:
+      - sections/section-010/module-04/course-01-decrypt-secrets-with-sops-and-age.md
+    prompt: "Why does a Kubernetes Secret need encryption before it is committed to Git?"
+    options:
+      - id: a
+        text: "Git cannot store base64 text."
+        explanation: "Not correct. Git stores any text."
+      - id: b
+        text: "Its values are base64, which is an encoding and not encryption."
+        explanation: "Correct. Anyone who reads the repository can decode the value."
+      - id: c
+        text: "Kubernetes refuses a Secret that is not encrypted."
+        explanation: "Not correct. Kubernetes accepts plain Secrets."
+      - id: d
+        text: "Flux deletes unencrypted Secrets."
+        explanation: "Not correct. Flux applies them as written."
+    correct_option: b
+    explanation: "Correct. Base64 hides nothing."
+
+  - id: ats096-010-m04-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the key a Flux decryption Secret needs"
+    source_readings:
+      - sections/section-010/module-04/course-01-decrypt-secrets-with-sops-and-age.md
+    prompt: "Which key name in the Secret `sops-age` makes kustomize-controller use it as an age key?"
+    options:
+      - id: a
+        text: "A name that ends in `.pem`."
+        explanation: "Not correct. That ending is not used for age keys."
+      - id: b
+        text: "Any name."
+        explanation: "Not correct. The ending matters."
+      - id: c
+        text: "A name that ends in `.agekey`, such as `age.agekey`."
+        explanation: "Correct. The ending tells the controller the key type."
+      - id: d
+        text: "`password`."
+        explanation: "Not correct. That is not a key name the controller looks for."
+    correct_option: c
+    explanation: "Correct. Use the `.agekey` ending."
+
+  - id: ats096-010-m04-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Limit what SOPS encrypts"
+    source_readings:
+      - sections/section-010/module-04/course-01-decrypt-secrets-with-sops-and-age.md
+    prompt: "What does `--encrypted-regex '^(data|stringData)$'` do when you encrypt a Secret file?"
+    options:
+      - id: a
+        text: "It encrypts only the fields `data` and `stringData`, so the name and kind stay readable."
+        explanation: "Correct. Diffs in Git still show what changed."
+      - id: b
+        text: "It encrypts the whole file, including the key names."
+        explanation: "Not correct. The regular expression limits encryption."
+      - id: c
+        text: "It decrypts those fields."
+        explanation: "Not correct. The command encrypts."
+      - id: d
+        text: "It removes the fields from the file."
+        explanation: "Not correct. The fields stay, with encrypted values."
+    correct_option: a
+    explanation: "Correct. The regular expression limits encryption to the values."
+
+  - id: ats096-010-m04-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Configure decryption on a Flux Kustomization"
+    source_readings:
+      - sections/section-010/module-04/course-01-decrypt-secrets-with-sops-and-age.md
+    prompt: "Which spec fragment makes a Flux `Kustomization` decrypt SOPS files with the Secret `sops-age`?"
+    options:
+      - id: a
+        text: "`decryption: {provider: age, secretRef: {name: sops-age}}`"
+        explanation: "Not correct. The provider is `sops`; age is only the key type."
+      - id: b
+        text: "`postBuild: {substituteFrom: [{kind: Secret, name: sops-age}]}`"
+        explanation: "Not correct. That substitutes variables and does not decrypt files."
+      - id: c
+        text: "`serviceAccountName: sops-age`"
+        explanation: "Not correct. That sets the account used for the apply."
+      - id: d
+        text: "`decryption: {provider: sops, secretRef: {name: sops-age}}`"
+        explanation: "Correct. The Secret is read from the namespace of the Flux `Kustomization`."
+    correct_option: d
+    explanation: "Correct. `provider: sops` turns decryption on."
+
+  - id: ats096-010-m04-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict the result without decryption"
+    source_readings:
+      - sections/section-010/module-04/course-01-decrypt-secrets-with-sops-and-age.md
+    prompt: "A Flux `Kustomization` without a `decryption` block builds a folder with a SOPS-encrypted Secret. What happens?"
+    options:
+      - id: a
+        text: "Flux decrypts it with a key it finds on its own."
+        explanation: "Not correct. Decryption needs the `decryption` block and a key Secret."
+      - id: b
+        text: "Flux skips the file silently and reports `Ready`."
+        explanation: "Not correct. The file is part of the build."
+      - id: c
+        text: "Flux deletes the file from Git."
+        explanation: "Not correct. Flux never writes to Git here."
+      - id: d
+        text: "The file is built as stored and the apply fails, so the object does not become `Ready`."
+        explanation: "Correct. The controller has no instruction to decrypt."
+    correct_option: d
+    explanation: "Correct. Without the block the encrypted file cannot be applied."
+
+  - id: ats096-010-m04-q06
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe impersonation"
+    source_readings:
+      - sections/section-010/module-04/course-02-impersonate-a-service-account.md
+    prompt: "What does `spec.serviceAccountName` change for a Flux `Kustomization`?"
+    options:
+      - id: a
+        text: "It sets the account that runs the pods of the application."
+        explanation: "Not correct. Pods use the `serviceAccountName` in the pod template."
+      - id: b
+        text: "kustomize-controller applies, waits for and prunes the objects as that ServiceAccount."
+        explanation: "Correct. RBAC then limits the apply."
+      - id: c
+        text: "It sets the account that logs in to Git."
+        explanation: "Not correct. Git credentials come from the source."
+      - id: d
+        text: "It lets the Flux `Kustomization` skip RBAC."
+        explanation: "Not correct. It does the opposite and enforces RBAC."
+    correct_option: b
+    explanation: "Correct. The apply runs as the named ServiceAccount."
+
+  - id: ats096-010-m04-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the namespace of the ServiceAccount"
+    source_readings:
+      - sections/section-010/module-04/course-02-impersonate-a-service-account.md
+    prompt: "In which namespace must the ServiceAccount named in `serviceAccountName` exist?"
+    options:
+      - id: a
+        text: "The namespace of the Flux `Kustomization`."
+        explanation: "Correct. It is not looked up in `targetNamespace`."
+      - id: b
+        text: "The namespace in `targetNamespace`."
+        explanation: "Not correct. The Role and RoleBinding go there, not the ServiceAccount lookup."
+      - id: c
+        text: "`kube-system`."
+        explanation: "Not correct. No fixed namespace is used."
+      - id: d
+        text: "Any namespace."
+        explanation: "Not correct. The lookup is in one namespace."
+    correct_option: a
+    explanation: "Correct. The lookup uses the namespace of the Flux `Kustomization`."
+
+  - id: ats096-010-m04-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose a source kind"
+    source_readings:
+      - sections/section-010/module-04/course-03-source-kinds-and-cross-namespace-refs.md
+    prompt: "A pipeline builds the manifests once and promotes the same immutable, versioned artifact through environments. Which source kind fits?"
+    options:
+      - id: a
+        text: "`OCIRepository`"
+        explanation: "Correct. A registry stores versioned artifacts."
+      - id: b
+        text: "`Bucket`"
+        explanation: "Not correct. A bucket holds the current files and keeps no history."
+      - id: c
+        text: "`HelmRepository`"
+        explanation: "Not correct. That is a Helm chart source, not a manifest artifact source for this case."
+      - id: d
+        text: "`ConfigMap`"
+        explanation: "Not correct. A ConfigMap is not a source kind."
+    correct_option: a
+    explanation: "Correct. An OCI artifact is immutable and versioned."
+
+  - id: ats096-010-m04-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use a source in another namespace"
+    source_readings:
+      - sections/section-010/module-04/course-03-source-kinds-and-cross-namespace-refs.md
+    prompt: "A Flux `Kustomization` in `team-a` must use the `OCIRepository` `podinfo-manifests` in `flux-system`. What goes into `sourceRef`?"
+    options:
+      - id: a
+        text: "`kind: OCIRepository`, `name: podinfo-manifests` and `namespace: flux-system`."
+        explanation: "Correct. Without `namespace` the lookup stays in `team-a`."
+      - id: b
+        text: "Only `kind` and `name`."
+        explanation: "Not correct. The name is then looked up in `team-a`."
+      - id: c
+        text: "`kind: Namespace` and `name: flux-system`."
+        explanation: "Not correct. A namespace is not a source."
+      - id: d
+        text: "`serviceAccountName: flux-system`."
+        explanation: "Not correct. That field sets the apply account."
+    correct_option: a
+    explanation: "Correct. `sourceRef.namespace` selects the namespace."
+
+  - id: ats096-010-m04-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pause without deleting"
+    source_readings:
+      - sections/section-010/module-04/course-04-suspend-resume-and-reconcile-controls.md
+    prompt: "You must stop Flux from applying changes during an incident. Why is `flux suspend kustomization` better than deleting the Flux `Kustomization`?"
+    options:
+      - id: a
+        text: "Deleting is not possible with `kubectl`."
+        explanation: "Not correct. Deleting is possible, which is the danger."
+      - id: b
+        text: "Suspending deletes the source too."
+        explanation: "Not correct. Suspending touches the Flux `Kustomization` only."
+      - id: c
+        text: "Suspending is faster than deleting."
+        explanation: "Not correct. Speed is not the reason."
+      - id: d
+        text: "With `prune: true`, deleting the object can remove everything it applied; suspending removes nothing."
+        explanation: "Correct. Suspending only stops reconciliation."
+    correct_option: d
+    explanation: "Correct. Suspend keeps the applied objects."

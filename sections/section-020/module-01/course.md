@@ -6,7 +6,7 @@ Flux has two tools for this. `dependsOn` makes a Flux `Kustomization` wait until
 
 Keep one sentence in mind: **`dependsOn` waits for `Ready`, and health checks decide what `Ready` means.** One without the other gives you order without proof, or proof without order.
 
-The module has three parts. **Ordering With dependsOn** deploys `redis` and then `podinfo`, and shows what a waiting Flux `Kustomization` reports. **Health Checks, Timeouts And Retries** compares `wait`, `healthChecks` and `healthCheckExprs` and breaks a health check on purpose. **A Staged Pipeline From Staging To Production** connects staging and production and stops a bad commit in staging. A graded lab follows the third part.
+The module has four parts. **Ordering With dependsOn** deploys `redis` and then `podinfo`, and shows what a waiting Flux `Kustomization` reports. **Health Checks, Timeouts And Retries** compares `wait`, `healthChecks` and `healthCheckExprs` and breaks a health check on purpose. **A Staged Pipeline From Staging To Production** connects staging and production and stops a bad commit in staging. A graded lab follows the third part. **Diagnosing A Stuck Pipeline** closes the module with the commands that find the stage that holds the real problem.
 
 ## Learning objectives
 

@@ -1,0 +1,11 @@
+# The namespaces of the two podinfo environments. A Flux Kustomization's
+# targetNamespace never creates a namespace, so the platform creates them.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: podinfo-staging
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: podinfo-production

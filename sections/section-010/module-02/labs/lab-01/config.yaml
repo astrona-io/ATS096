@@ -1,0 +1,53 @@
+# Roll Pods With A Generated ConfigMap
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-010-02"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-010-02-setup"
+      description: "Applies the Flux Kustomization podinfo-staging for the staging overlay and waits until it is Ready"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-kustomization"
+      description: "Confirms podinfo-staging still builds the staging overlay, prunes, is not suspended and is Ready"
+      type: "file"
+      source: "validation/validate-kustomization.sh"
+    - name: "validate-generated-configmap"
+      description: "Confirms the Deployment reads a generated ConfigMap podinfo-config-<hash> that Flux applied, and that only one is left"
+      type: "file"
+      source: "validation/validate-generated-configmap.sh"
+    - name: "validate-rollout"
+      description: "Confirms podinfo in podinfo-staging has 1 ready replica and answers with the message rolled-out"
+      type: "file"
+      source: "validation/validate-rollout.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13

@@ -1,0 +1,239 @@
+# Knowledge check for module 03 of section 040. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-040-m03
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-03
+  title: Move And Remove Objects Safely
+placement:
+  position: after
+  reading: sections/section-040/module-03/course-05-summary.md
+questions:
+- id: ats096-040-m03-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the record
+  source_readings:
+  - sections/section-040/module-03/course-01-the-inventory-in-detail.md
+  prompt: Where does a Flux `Kustomization` record the objects it applied?
+  options:
+  - id: a
+    text: In `status.inventory.entries`.
+    explanation: Correct. The inventory is part of the status.
+  - id: b
+    text: In `spec.inventory`.
+    explanation: Not correct. The spec is what you write.
+  - id: c
+    text: In a ConfigMap in `flux-system`.
+    explanation: Not correct. It is a status field.
+  - id: d
+    text: In the Git repository.
+    explanation: Not correct. Git holds the desired state.
+  correct_option: a
+  explanation: Correct. The inventory is part of the status.
+- id: ats096-040-m03-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the labels
+  source_readings:
+  - sections/section-040/module-03/course-01-the-inventory-in-detail.md
+  prompt: Which labels name the Flux `Kustomization` that applied an object?
+  options:
+  - id: a
+    text: "`app.kubernetes.io/managed-by`"
+    explanation: Not correct. Not written by Flux for this.
+  - id: b
+    text: "`flux.io/owner`"
+    explanation: Not correct. No such label.
+  - id: c
+    text: "`kustomize.io/stage`"
+    explanation: Not correct. No such label.
+  - id: d
+    text: "`kustomize.toolkit.fluxcd.io/name` and `kustomize.toolkit.fluxcd.io/namespace`"
+    explanation: Correct. They are written at every apply.
+  correct_option: d
+  explanation: Correct. They are written at every apply.
+- id: ats096-040-m03-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the tree
+  source_readings:
+  - sections/section-040/module-03/course-01-the-inventory-in-detail.md
+  prompt: What does `flux tree kustomization <name>` show below the inventory objects?
+  options:
+  - id: a
+    text: Objects in Git that failed to apply.
+    explanation: Not correct. It shows live objects.
+  - id: b
+    text: The history of commits.
+    explanation: Not correct. It does not show commits.
+  - id: c
+    text: Objects their controllers created, which are not in the inventory.
+    explanation: Correct. They go away with their parent.
+  - id: d
+    text: Only the Helm releases.
+    explanation: Not correct. It shows all kinds.
+  correct_option: c
+  explanation: Correct. They go away with their parent.
+- id: ats096-040-m03-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: State the rule
+  source_readings:
+  - sections/section-040/module-03/course-02-what-pruning-deletes-and-what-it-skips.md
+  prompt: When does pruning delete an object?
+  options:
+  - id: a
+    text: Whenever it is not in the new build.
+    explanation: Not correct. Labels and inventory also matter.
+  - id: b
+    text: It was in the last inventory, is not in the new build, and still has this
+      stage's owner labels.
+    explanation: Correct. All three conditions apply.
+  - id: c
+    text: Whenever it was created by hand.
+    explanation: Not correct. Those are never pruned.
+  - id: d
+    text: Whenever the stage is suspended.
+    explanation: Not correct. A suspended stage does not prune.
+  correct_option: b
+  explanation: Correct. All three conditions apply.
+- id: ats096-040-m03-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Protect an object
+  source_readings:
+  - sections/section-040/module-03/course-02-what-pruning-deletes-and-what-it-skips.md
+  prompt: Which annotation stops pruning from deleting one object?
+  options:
+  - id: a
+    text: "`kustomize.toolkit.fluxcd.io/prune: disabled`"
+    explanation: Correct. The object is left in the cluster.
+  - id: b
+    text: "`kustomize.toolkit.fluxcd.io/reconcile: disabled`"
+    explanation: Not correct. That stops applying.
+  - id: c
+    text: "`kustomize.toolkit.fluxcd.io/ssa: Ignore`"
+    explanation: Not correct. That is about applying.
+  - id: d
+    text: "`kustomize.toolkit.fluxcd.io/force: enabled`"
+    explanation: Not correct. That recreates objects.
+  correct_option: a
+  explanation: Correct. The object is left in the cluster.
+- id: ats096-040-m03-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Predict the leftover
+  source_readings:
+  - sections/section-040/module-03/course-02-what-pruning-deletes-and-what-it-skips.md
+  prompt: 'An object has `prune: disabled` and its file leaves Git. What happens?'
+  options:
+  - id: a
+    text: It is deleted at the next run.
+    explanation: Not correct. The annotation prevents it.
+  - id: b
+    text: The stage fails.
+    explanation: Not correct. There is no failure.
+  - id: c
+    text: It is recreated.
+    explanation: Not correct. Nothing recreates it.
+  - id: d
+    text: It stays in the cluster with no owner in Git.
+    explanation: Correct. It is left behind on purpose.
+  correct_option: d
+  explanation: Correct. It is left behind on purpose.
+- id: ats096-040-m03-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Order the commits
+  source_readings:
+  - sections/section-040/module-03/course-03-moving-an-object-between-stages.md
+  prompt: Which order moves an object between two stages without deleting it?
+  options:
+  - id: a
+    text: Remove it from the old stage first.
+    explanation: Not correct. The old stage prunes it.
+  - id: b
+    text: Both changes in one commit.
+    explanation: Not correct. The outcome depends on timing.
+  - id: c
+    text: Add it to the new stage first, then remove it from the old stage.
+    explanation: Correct. The old stage then skips it.
+  - id: d
+    text: Delete it by hand, then add it.
+    explanation: Not correct. That recreates it.
+  correct_option: c
+  explanation: Correct. The old stage then skips it.
+- id: ats096-040-m03-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Prove the move
+  source_readings:
+  - sections/section-040/module-03/course-03-moving-an-object-between-stages.md
+  prompt: What proves that the object was not recreated?
+  options:
+  - id: a
+    text: Its name is the same.
+    explanation: Not correct. A recreated object has the same name.
+  - id: b
+    text: Its UID is the same before and after.
+    explanation: Correct. A recreated object has a new UID.
+  - id: c
+    text: The stage is Ready.
+    explanation: Not correct. That says nothing about the object.
+  - id: d
+    text: It has the same labels.
+    explanation: Not correct. The labels change in a move.
+  correct_option: b
+  explanation: Correct. A recreated object has a new UID.
+- id: ats096-040-m03-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know the default
+  source_readings:
+  - sections/section-040/module-03/course-04-deleting-a-stage.md
+  prompt: 'A Flux `Kustomization` with `prune: true` and the default policy is deleted.
+    What happens to its objects?'
+  options:
+  - id: a
+    text: They are deleted.
+    explanation: Correct. `MirrorPrune` follows `prune`.
+  - id: b
+    text: They stay in the cluster.
+    explanation: Not correct. That is Orphan.
+  - id: c
+    text: They are suspended.
+    explanation: Not correct. Objects cannot be suspended.
+  - id: d
+    text: They move to the default namespace.
+    explanation: Not correct. No such behavior.
+  correct_option: a
+  explanation: Correct. `MirrorPrune` follows `prune`.
+- id: ats096-040-m03-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Keep the objects
+  source_readings:
+  - sections/section-040/module-03/course-04-deleting-a-stage.md
+  prompt: Which `deletionPolicy` keeps the objects when the stage is deleted?
+  options:
+  - id: a
+    text: "`Delete`"
+    explanation: Not correct. It deletes them.
+  - id: b
+    text: "`WaitForTermination`"
+    explanation: Not correct. It deletes and waits.
+  - id: c
+    text: "`MirrorPrune` with `prune: true`"
+    explanation: Not correct. It deletes them.
+  - id: d
+    text: "`Orphan`"
+    explanation: Correct. It never deletes the objects.
+  correct_option: d
+  explanation: Correct. It never deletes the objects.

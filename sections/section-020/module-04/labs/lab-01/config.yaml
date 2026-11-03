@@ -1,0 +1,54 @@
+# Order A Chart Before Its Consumer
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-020-04"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-020-04-setup"
+      description: "Checks that no Flux Kustomization exists yet; the task creates chart and consumer"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-chart-stage"
+      description: "Confirms the Flux Kustomization chart applies the HelmRelease and health-checks it"
+      type: "file"
+      source: "validation/validate-chart-stage.sh"
+    - name: "validate-order"
+      description: "Confirms consumer depends on chart and both are Ready"
+      type: "file"
+      source: "validation/validate-order.sh"
+    - name: "validate-consumer-applied"
+      description: "Confirms the ConfigMap consumer-settings exists in podinfo-staging and the podinfo release is deployed"
+      type: "file"
+      source: "validation/validate-consumer-applied.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13
+      - redis:7.4-alpine

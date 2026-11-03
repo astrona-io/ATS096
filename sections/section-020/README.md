@@ -16,16 +16,39 @@ This section adds order and proof. `dependsOn` makes one Flux `Kustomization` wa
 
 ## The learning path
 
-The module has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground.
+The section has four modules. Each module has a landing page that starts its own playground, four reading parts, a graded lab right after the part it tests, and a summary. The three newer modules end with a knowledge check.
 
 ### 1. Order And Gate Deployments With dependsOn And Health Checks
-
-The playground holds Flux, the repository `gitops/fleet` with a `redis` cache in `infrastructure/redis` and the `podinfo` base in `apps/podinfo/base`, and empty namespaces for staging and production.
 
 1. Ordering With dependsOn
 2. Health Checks, Timeouts And Retries
 3. A Staged Pipeline From Staging To Production, followed by the lab **Build A Staged Pipeline From Staging To Production**
-4. Summary
+4. Diagnosing A Stuck Pipeline
+5. Summary
+
+### 2. Judge Custom Resources With CEL Health Checks
+
+1. Why Custom Resources Need A Health Rule
+2. Writing healthCheckExprs
+3. Testing An Expression, followed by the lab **Gate A Custom Resource With healthCheckExprs**
+4. Reusable Expressions
+5. Summary, then a knowledge check
+
+### 3. Control The Reconciliation Lifecycle
+
+1. Interval, Timeout And Retry
+2. Suspend And Resume
+3. Requesting A Reconciliation, followed by the lab **Resume And Tune A Suspended Stage**
+4. Reading The Status Of A Run
+5. Summary, then a knowledge check
+
+### 4. Order Kustomizations Around HelmReleases And CRDs
+
+1. The Problem Of Order Across Kinds
+2. A HelmRelease Inside A Gated Kustomization, followed by the lab **Order A Chart Before Its Consumer**
+3. Ordering HelmRelease Objects
+4. CRDs And Their Custom Resources
+5. Summary, then a knowledge check
 
 ## Section capstone: Unblock A Stuck Delivery Pipeline
 

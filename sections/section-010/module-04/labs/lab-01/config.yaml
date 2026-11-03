@@ -1,0 +1,53 @@
+# Decrypt A Secret With SOPS And Age
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-010-04"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-010-04-setup"
+      description: "Installs age and sops, stores the age private key as the Secret sops-age, commits an encrypted Secret to Git and applies the Flux Kustomization podinfo-secure without decryption"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-decryption"
+      description: "Confirms podinfo-secure still builds ./apps/podinfo/base, prunes, is not suspended, uses sops decryption with the Secret sops-age and is Ready"
+      type: "file"
+      source: "validation/validate-decryption.sh"
+    - name: "validate-secret"
+      description: "Confirms the Secret podinfo-credentials in podinfo-staging holds the decrypted message and the file in Git is still encrypted"
+      type: "file"
+      source: "validation/validate-secret.sh"
+    - name: "validate-workload"
+      description: "Confirms podinfo in podinfo-staging has 1 ready replica and answers with the message sealed-by-sops"
+      type: "file"
+      source: "validation/validate-workload.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13

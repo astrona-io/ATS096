@@ -1,0 +1,49 @@
+# Install Into A New Namespace With Separate Storage
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-030-04"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-030-04-setup"
+      description: "Creates the HelmRepository podinfo in flux-system and waits until its index is fetched"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-release-options"
+      description: "Confirms the HelmRelease podinfo uses targetNamespace podinfo-app, storageNamespace podinfo-staging, releaseName podinfo, createNamespace and maxHistory 3"
+      type: "file"
+      source: "validation/validate-release-options.sh"
+    - name: "validate-install-result"
+      description: "Confirms the release is Ready, the Deployment runs in podinfo-app and Helm stores its revisions in podinfo-staging only"
+      type: "file"
+      source: "validation/validate-install-result.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13

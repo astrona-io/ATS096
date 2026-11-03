@@ -1,0 +1,17 @@
+# The Flux Kustomization the lab starts with. It builds the base, which
+# contains an encrypted Secret, but it has no decryption block.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: podinfo-secure
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/podinfo/base
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-staging
+  sourceRef:
+    kind: GitRepository
+    name: fleet

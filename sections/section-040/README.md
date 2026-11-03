@@ -15,16 +15,39 @@ This section shows how each controller finds and corrects drift, how pruning dec
 
 ## The learning path
 
-The module has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground.
+The section has four modules. Each module has a landing page that starts its own playground, four reading parts, a graded lab right after the part it tests, and a summary. The three newer modules end with a knowledge check.
 
 ### 1. Keep The Cluster Equal To Git
-
-The playground runs podinfo twice: staging from the Git base with a Flux `Kustomization`, and production from the Helm chart with a `HelmRelease`. It needs outbound internet for the chart.
 
 1. Drift Correction With Server-Side Apply
 2. Pruning, The Inventory And Deletion Policies
 3. Drift Detection In helm-controller, followed by the lab **Make Helm Correct Drift Without Touching Tuned Fields**
-4. Summary
+4. Seeing Drift Before You Fix It
+5. Summary
+
+### 2. Share Fields Between Flux And Other Controllers
+
+1. Reading Field Ownership
+2. Letting Another Writer Own A Field, followed by the lab **Let An Autoscaler Own The Replicas**
+3. Conflicts And Forced Changes
+4. Choosing The Smallest Exception
+5. Summary, then a knowledge check
+
+### 3. Move And Remove Objects Safely
+
+1. The Inventory In Detail
+2. What Pruning Deletes And What It Skips
+3. Moving An Object Between Stages, followed by the lab **Move An Object Between Stages Without Recreating It**
+4. Deleting A Stage
+5. Summary, then a knowledge check
+
+### 4. Helm Drift And Field Ownership
+
+1. What helm-controller Compares
+2. Writing Ignore Rules
+3. Sharing Fields With An Autoscaler, followed by the lab **Let An Autoscaler Own Replicas In A Helm Release**
+4. Choosing A Drift Policy
+5. Summary, then a knowledge check
 
 ## Section capstone: Keep Two Environments Equal To Git
 

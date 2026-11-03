@@ -1,0 +1,54 @@
+# Resume And Tune A Suspended Stage
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-096-lab-020-03"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-git-and-flux"
+      description: "Installs the Flux CLI 2.9.6, Gitea with the repository gitops/fleet, the CoreDNS rewrite, the Flux controllers and the fleet source"
+      type: "file"
+      source: "bootstrap/01-install-git-and-flux.sh"
+    - name: "ats-096-lab-020-03-setup"
+      description: "Creates apps-staging suspended, with a 24 hour interval and a 5 second timeout"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-flux"
+      description: "Waits until Gitea and every Flux controller are available"
+      type: "file"
+      source: "testing/wait-for-flux.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-resumed"
+      description: "Confirms apps-staging is not suspended and is Ready"
+      type: "file"
+      source: "validation/validate-resumed.sh"
+    - name: "validate-timing"
+      description: "Confirms apps-staging has interval 5m, retryInterval 1m and timeout 3m"
+      type: "file"
+      source: "validation/validate-timing.sh"
+    - name: "validate-requested"
+      description: "Confirms a reconciliation was requested by hand and podinfo answers staging"
+      type: "file"
+      source: "validation/validate-requested.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - gitea/gitea:28.2.0-rootless
+      - nicolaka/netshoot:v0.13
+      - redis:7.4-alpine

@@ -12,6 +12,7 @@ helm-controller only upgrades when the chart or the values change, so by default
 
 - kustomize-controller corrects drift by default; helm-controller only with `driftDetection.mode: enabled`.
 - Pruning deletes only what is on the inventory.
+- `flux diff kustomization` previews a change, and events and field managers show what a reconciliation did.
 - Every annotation and ignore rule is a hole in the guarantee; keep each one narrow and deliberate.
 
 <!-- astrona:playground:destroy -->

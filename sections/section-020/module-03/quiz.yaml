@@ -1,0 +1,237 @@
+# Knowledge check for module 03 of section 020. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-020-m03
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-03
+  title: Control The Reconciliation Lifecycle
+placement:
+  position: after
+  reading: sections/section-020/module-03/course-05-summary.md
+questions:
+- id: ats096-020-m03-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain interval
+  source_readings:
+  - sections/section-020/module-03/course-01-interval-timeout-and-retry.md
+  prompt: What does `spec.interval` of a Flux `Kustomization` decide?
+  options:
+  - id: a
+    text: The wait after a successful run, which is also how often drift is corrected.
+    explanation: Correct. interval is the success clock.
+  - id: b
+    text: The wait after a failed run.
+    explanation: Not correct. That is retryInterval.
+  - id: c
+    text: The budget of one run.
+    explanation: Not correct. That is timeout.
+  - id: d
+    text: How often the source fetches Git.
+    explanation: Not correct. That is the interval of the GitRepository.
+  correct_option: a
+  explanation: Correct. interval is the success clock.
+- id: ats096-020-m03-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain retryInterval
+  source_readings:
+  - sections/section-020/module-03/course-01-interval-timeout-and-retry.md
+  prompt: Which value does `retryInterval` use when it is not set?
+  options:
+  - id: a
+    text: 30 seconds.
+    explanation: Not correct. There is no fixed default of 30 seconds.
+  - id: b
+    text: Zero, so it retries at once.
+    explanation: Not correct. It does not retry in a tight loop.
+  - id: c
+    text: The value of `timeout`.
+    explanation: Not correct. timeout is a different field.
+  - id: d
+    text: The value of `interval`.
+    explanation: Correct. It falls back to interval.
+  correct_option: d
+  explanation: Correct. It falls back to interval.
+- id: ats096-020-m03-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain timeout
+  source_readings:
+  - sections/section-020/module-03/course-01-interval-timeout-and-retry.md
+  prompt: What does `timeout` limit?
+  options:
+  - id: a
+    text: The age of a revision.
+    explanation: Not correct. Revisions have no timeout.
+  - id: b
+    text: The time between two commits.
+    explanation: Not correct. Commits are not limited.
+  - id: c
+    text: The time of one run, including the health check.
+    explanation: Correct. Timeout is the budget of a run.
+  - id: d
+    text: The time a suspended object may stay suspended.
+    explanation: Not correct. Suspend has no timeout.
+  correct_option: c
+  explanation: Correct. Timeout is the budget of a run.
+- id: ats096-020-m03-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Separate source and stage clocks
+  source_readings:
+  - sections/section-020/module-03/course-01-interval-timeout-and-retry.md
+  prompt: A new commit is pushed to Git. Which clock decides when Flux sees it?
+  options:
+  - id: a
+    text: The `interval` of the Kustomization.
+    explanation: Not correct. The Kustomization works on artifacts, not Git.
+  - id: b
+    text: The `interval` of the `GitRepository`.
+    explanation: Correct. The source fetches the commit.
+  - id: c
+    text: The `retryInterval` of the Kustomization.
+    explanation: Not correct. That clock is for failures.
+  - id: d
+    text: The `timeout` of the Kustomization.
+    explanation: Not correct. Timeout is not a schedule.
+  correct_option: b
+  explanation: Correct. The source fetches the commit.
+- id: ats096-020-m03-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain suspend
+  source_readings:
+  - sections/section-020/module-03/course-02-suspend-and-resume.md
+  prompt: 'What happens to a Flux `Kustomization` with `spec.suspend: true`?'
+  options:
+  - id: a
+    text: Nothing is built, applied or pruned, and live objects stay as they are.
+    explanation: Correct. Suspend freezes the object.
+  - id: b
+    text: The live objects are deleted.
+    explanation: Not correct. Nothing is deleted.
+  - id: c
+    text: The objects are reverted to Git every minute.
+    explanation: Not correct. No reconciliation runs.
+  - id: d
+    text: The source stops fetching.
+    explanation: Not correct. The source is a separate object.
+  correct_option: a
+  explanation: Correct. Suspend freezes the object.
+- id: ats096-020-m03-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know what resume does
+  source_readings:
+  - sections/section-020/module-03/course-02-suspend-and-resume.md
+  prompt: What does `flux resume kustomization` do after a suspension?
+  options:
+  - id: a
+    text: Only clears the flag and waits for the next interval.
+    explanation: Not correct. It also triggers a run.
+  - id: b
+    text: Deletes manual changes only after a day.
+    explanation: Not correct. Manual changes are corrected by the first run.
+  - id: c
+    text: Recreates the Kustomization.
+    explanation: Not correct. The object is kept.
+  - id: d
+    text: Clears the suspend flag and runs a reconciliation at once.
+    explanation: Correct. Resume ends the freeze with a run.
+  correct_option: d
+  explanation: Correct. Resume ends the freeze with a run.
+- id: ats096-020-m03-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know what a request writes
+  source_readings:
+  - sections/section-020/module-03/course-03-requesting-a-reconciliation.md
+  prompt: Which annotation does `flux reconcile` write to request a run?
+  options:
+  - id: a
+    text: "`fluxcd.io/reconcile`"
+    explanation: Not correct. That name is not used.
+  - id: b
+    text: "`kustomize.toolkit.fluxcd.io/force`"
+    explanation: Not correct. That annotation does something else.
+  - id: c
+    text: "`reconcile.fluxcd.io/requestedAt`"
+    explanation: Correct. This annotation is copied to the status when handled.
+  - id: d
+    text: "`reconcile.fluxcd.io/interval`"
+    explanation: Not correct. The interval is a spec field.
+  correct_option: c
+  explanation: Correct. This annotation is copied to the status when handled.
+- id: ats096-020-m03-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know what --with-source does
+  source_readings:
+  - sections/section-020/module-03/course-03-requesting-a-reconciliation.md
+  prompt: What does `flux reconcile kustomization apps --with-source` add?
+  options:
+  - id: a
+    text: It skips dependsOn.
+    explanation: Not correct. dependsOn is never skipped.
+  - id: b
+    text: It fetches the source first, then runs the Kustomization.
+    explanation: Correct. With-source reconciles the source first.
+  - id: c
+    text: It deletes the old artifact.
+    explanation: Not correct. Artifacts are replaced by the fetch.
+  - id: d
+    text: It forces a rollback.
+    explanation: Not correct. There is no rollback here.
+  correct_option: b
+  explanation: Correct. With-source reconciles the source first.
+- id: ats096-020-m03-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the applied revision
+  source_readings:
+  - sections/section-020/module-03/course-04-reading-the-status-of-a-run.md
+  prompt: Which status field shows the revision that is live in the cluster?
+  options:
+  - id: a
+    text: "`status.lastAppliedRevision`"
+    explanation: Correct. It holds the last applied revision.
+  - id: b
+    text: "`status.lastAttemptedRevision`"
+    explanation: Not correct. That is the revision tried last, which may have failed.
+  - id: c
+    text: "`status.observedGeneration`"
+    explanation: Not correct. That is a generation number.
+  - id: d
+    text: "`status.inventory`"
+    explanation: Not correct. That lists objects, not revisions.
+  correct_option: a
+  explanation: Correct. It holds the last applied revision.
+- id: ats096-020-m03-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the conditions
+  source_readings:
+  - sections/section-020/module-03/course-04-reading-the-status-of-a-run.md
+  prompt: Which condition shows that a run is in progress?
+  options:
+  - id: a
+    text: "`Stalled`"
+    explanation: Not correct. Stalled is for a terminal error.
+  - id: b
+    text: "`Healthy`"
+    explanation: Not correct. Healthy reports the health checks.
+  - id: c
+    text: "`Suspended`"
+    explanation: Not correct. That is not a condition type.
+  - id: d
+    text: "`Reconciling`"
+    explanation: Correct. Reconciling is true while a run works.
+  correct_option: d
+  explanation: Correct. Reconciling is true while a run works.

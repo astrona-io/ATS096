@@ -1,0 +1,32 @@
+# Two stages that apply different folders of the same repository.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: team-a
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/team-a
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-staging
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: team-b
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/team-b
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-staging
+  sourceRef:
+    kind: GitRepository
+    name: fleet

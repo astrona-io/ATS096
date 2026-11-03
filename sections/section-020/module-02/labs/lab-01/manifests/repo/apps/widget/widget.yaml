@@ -1,0 +1,6 @@
+apiVersion: demo.astrona.io/v1
+kind: Widget
+metadata:
+  name: gauge
+spec:
+  size: 1

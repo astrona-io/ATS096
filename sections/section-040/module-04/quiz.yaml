@@ -1,0 +1,239 @@
+# Knowledge check for module 04 of section 040. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-040-m04
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-04
+  title: Helm Drift And Field Ownership
+placement:
+  position: after
+  reading: sections/section-040/module-04/course-05-summary.md
+questions:
+- id: ats096-040-m04-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the default
+  source_readings:
+  - sections/section-040/module-04/course-01-what-helm-controller-compares.md
+  prompt: A `HelmRelease` has no `driftDetection`. A person scales its Deployment
+    by hand. What does helm-controller do at the next reconciliation?
+  options:
+  - id: a
+    text: Nothing, because it does not compare live objects.
+    explanation: Correct. Drift detection is off by default.
+  - id: b
+    text: It scales the Deployment back.
+    explanation: Not correct. That needs mode enabled.
+  - id: c
+    text: It deletes the release.
+    explanation: Not correct. It does not.
+  - id: d
+    text: It marks the release failed.
+    explanation: Not correct. It stays Ready.
+  correct_option: a
+  explanation: Correct. Drift detection is off by default.
+- id: ats096-040-m04-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the report
+  source_readings:
+  - sections/section-040/module-04/course-01-what-helm-controller-compares.md
+  prompt: Which condition reports drift of a Helm release?
+  options:
+  - id: a
+    text: "`Stalled`"
+    explanation: Not correct. That reports exhausted retries.
+  - id: b
+    text: "`Remediated`"
+    explanation: Not correct. That reports a rollback or uninstall.
+  - id: c
+    text: "`TestSuccess`"
+    explanation: Not correct. That reports Helm tests.
+  - id: d
+    text: "`Drifted` with the reason `DriftDetected`"
+    explanation: Correct. It appears with warn and enabled.
+  correct_option: d
+  explanation: Correct. It appears with warn and enabled.
+- id: ats096-040-m04-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Understand warn
+  source_readings:
+  - sections/section-040/module-04/course-01-what-helm-controller-compares.md
+  prompt: 'What does `mode: warn` change in the cluster?'
+  options:
+  - id: a
+    text: It corrects drift once.
+    explanation: Not correct. That is enabled.
+  - id: b
+    text: It rolls back the release.
+    explanation: Not correct. It does not.
+  - id: c
+    text: Nothing; it only reports.
+    explanation: Correct. Warn never applies.
+  - id: d
+    text: It suspends the release.
+    explanation: Not correct. It does not.
+  correct_option: c
+  explanation: Correct. Warn never applies.
+- id: ats096-040-m04-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the baseline
+  source_readings:
+  - sections/section-040/module-04/course-01-what-helm-controller-compares.md
+  prompt: What does helm-controller compare live objects with?
+  options:
+  - id: a
+    text: The Git repository.
+    explanation: Not correct. It compares against the release.
+  - id: b
+    text: The manifest of the last release revision.
+    explanation: Correct. Not Git.
+  - id: c
+    text: The last applied annotation.
+    explanation: Not correct. Not used.
+  - id: d
+    text: The chart default values only.
+    explanation: Not correct. The rendered release manifest is used.
+  correct_option: b
+  explanation: Correct. Not Git.
+- id: ats096-040-m04-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read a rule
+  source_readings:
+  - sections/section-040/module-04/course-02-writing-ignore-rules.md
+  prompt: What does an ignore rule with `paths` and no `target` do?
+  options:
+  - id: a
+    text: It applies to every object of the release that has the path.
+    explanation: Correct. Add a target to narrow it.
+  - id: b
+    text: It applies to nothing.
+    explanation: Not correct. It applies widely.
+  - id: c
+    text: It is rejected.
+    explanation: Not correct. It is valid.
+  - id: d
+    text: It applies to the Deployment only.
+    explanation: Not correct. Only a target selects kinds.
+  correct_option: a
+  explanation: Correct. Add a target to narrow it.
+- id: ats096-040-m04-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Write a pointer
+  source_readings:
+  - sections/section-040/module-04/course-02-writing-ignore-rules.md
+  prompt: Which JSON Pointer names the replica count of a Deployment?
+  options:
+  - id: a
+    text: "`spec.replicas`"
+    explanation: Not correct. Dots are not used.
+  - id: b
+    text: "`/replicas`"
+    explanation: Not correct. The field is under spec.
+  - id: c
+    text: "`/spec/template/replicas`"
+    explanation: Not correct. Wrong place.
+  - id: d
+    text: "`/spec/replicas`"
+    explanation: Correct. Pointers start at the root with a slash.
+  correct_option: d
+  explanation: Correct. Pointers start at the root with a slash.
+- id: ats096-040-m04-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Catch a typo
+  source_readings:
+  - sections/section-040/module-04/course-02-writing-ignore-rules.md
+  prompt: What happens when an ignore path has a typo?
+  options:
+  - id: a
+    text: The release fails.
+    explanation: Not correct. There is no error.
+  - id: b
+    text: The whole object is ignored.
+    explanation: Not correct. Nothing is ignored.
+  - id: c
+    text: It matches nothing and gives no error.
+    explanation: Correct. Test every rule.
+  - id: d
+    text: The rule is deleted.
+    explanation: Not correct. It is kept.
+  correct_option: c
+  explanation: Correct. Test every rule.
+- id: ats096-040-m04-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Name the fight
+  source_readings:
+  - sections/section-040/module-04/course-03-sharing-fields-with-an-autoscaler.md
+  prompt: Why does the replica count return to 2 with mode enabled and an autoscaler?
+  options:
+  - id: a
+    text: The autoscaler is disabled.
+    explanation: Not correct. It is not.
+  - id: b
+    text: helm-controller corrects the field to the release value.
+    explanation: Correct. Both write the same field.
+  - id: c
+    text: The chart is upgraded.
+    explanation: Not correct. No upgrade happens.
+  - id: d
+    text: The Deployment is recreated.
+    explanation: Not correct. It is not.
+  correct_option: b
+  explanation: Correct. Both write the same field.
+- id: ats096-040-m04-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: End the fight narrowly
+  source_readings:
+  - sections/section-040/module-04/course-03-sharing-fields-with-an-autoscaler.md
+  prompt: Which change ends the fight with the least cost?
+  options:
+  - id: a
+    text: Ignore `/spec/replicas` on Deployments and keep the mode enabled.
+    explanation: Correct. Other fields stay protected.
+  - id: b
+    text: Set the mode to warn.
+    explanation: Not correct. It stops all correction.
+  - id: c
+    text: Remove `driftDetection`.
+    explanation: Not correct. It stops all correction.
+  - id: d
+    text: Ignore `/spec`.
+    explanation: Not correct. It hides far too much.
+  correct_option: a
+  explanation: Correct. Other fields stay protected.
+- id: ats096-040-m04-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Pick a first step
+  source_readings:
+  - sections/section-040/module-04/course-04-choosing-a-drift-policy.md
+  prompt: On a cluster where people edit things by hand, which setting is the safest
+    first step?
+  options:
+  - id: a
+    text: "`mode: enabled` without rules"
+    explanation: Not correct. It may fight other writers.
+  - id: b
+    text: Nothing at all
+    explanation: Not correct. You would not see drift.
+  - id: c
+    text: Deleting the release
+    explanation: Not correct. Destructive.
+  - id: d
+    text: "`mode: warn`"
+    explanation: Correct. See the drift before correcting it.
+  correct_option: d
+  explanation: Correct. See the drift before correcting it.

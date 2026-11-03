@@ -1,0 +1,16 @@
+# The Flux Kustomization the lab starts with. It applies the staging overlay
+# as it is in Git. The task changes the overlay in Git, not this object.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: podinfo-staging
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/podinfo/overlays/staging
+  prune: true
+  wait: true
+  timeout: 2m
+  sourceRef:
+    kind: GitRepository
+    name: fleet

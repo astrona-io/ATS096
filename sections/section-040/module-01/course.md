@@ -6,7 +6,7 @@ During an incident, someone scales a Deployment to five replicas and adds a labe
 
 Keep one sentence in mind: **kustomize-controller corrects drift on every reconciliation, and helm-controller only when you ask it to.** Every command in this module tests that sentence.
 
-The module has three parts. **Drift Correction With Server-Side Apply** changes the staging Deployment by hand and shows what kustomize-controller puts back and what it leaves. **Pruning, The Inventory And Deletion Policies** adds and removes a file in Git and follows the object through the inventory. **Drift Detection In helm-controller** scales production by hand and turns on drift detection, with an exception for one field. A graded lab follows the third part.
+The module has four parts. **Drift Correction With Server-Side Apply** changes the staging Deployment by hand and shows what kustomize-controller puts back and what it leaves. **Pruning, The Inventory And Deletion Policies** adds and removes a file in Git and follows the object through the inventory. **Drift Detection In helm-controller** scales production by hand and turns on drift detection, with an exception for one field. **Seeing Drift Before You Fix It** previews changes with a diff and reads the events and field managers afterwards. A graded lab follows the third part.
 
 ## Learning objectives
 

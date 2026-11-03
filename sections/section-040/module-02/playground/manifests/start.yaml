@@ -1,0 +1,52 @@
+# Starting Flux objects for the drift playground: staging from the Git base
+# with a Flux Kustomization, production from the Helm chart with a HelmRelease
+# that has no drift detection yet. Production needs outbound internet.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: podinfo-staging
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/podinfo/base
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-staging
+  sourceRef:
+    kind: GitRepository
+    name: fleet
+  postBuild:
+    substitute:
+      environment: staging
+      message: staging
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: podinfo
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://stefanprodan.github.io/podinfo
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: podinfo
+  namespace: podinfo-production
+spec:
+  interval: 10m
+  releaseName: podinfo
+  chart:
+    spec:
+      chart: podinfo
+      version: 6.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: podinfo
+        namespace: flux-system
+  values:
+    replicaCount: 2
+    ui:
+      message: production

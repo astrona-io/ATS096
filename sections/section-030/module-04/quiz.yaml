@@ -1,0 +1,239 @@
+# Knowledge check for module 04 of section 030. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-030-m04
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-04
+  title: Install, Upgrade And Uninstall Options
+placement:
+  position: after
+  reading: sections/section-030/module-04/course-05-summary.md
+questions:
+- id: ats096-030-m04-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Place Helm storage
+  source_readings:
+  - sections/section-030/module-04/course-01-names-and-namespaces.md
+  prompt: Which field places Helm's release Secrets in a namespace of their own?
+  options:
+  - id: a
+    text: "`spec.storageNamespace`"
+    explanation: Correct. It sets the storage namespace.
+  - id: b
+    text: "`spec.targetNamespace`"
+    explanation: Not correct. That places the chart objects.
+  - id: c
+    text: "`spec.releaseName`"
+    explanation: Not correct. That names the release.
+  - id: d
+    text: "`spec.chart.spec.sourceRef.namespace`"
+    explanation: Not correct. That is the namespace of the source.
+  correct_option: a
+  explanation: Correct. It sets the storage namespace.
+- id: ats096-030-m04-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the name rule
+  source_readings:
+  - sections/section-030/module-04/course-01-names-and-namespaces.md
+  prompt: 'A release has `targetNamespace: apps` and no `releaseName`. What name does
+    Helm use?'
+  options:
+  - id: a
+    text: The object name only.
+    explanation: Not correct. The prefix applies with a target namespace.
+  - id: b
+    text: The chart name.
+    explanation: Not correct. The chart name is not used.
+  - id: c
+    text: A random name.
+    explanation: Not correct. The name is predictable.
+  - id: d
+    text: The target namespace and the object name joined with a dash.
+    explanation: Correct. That is the default rule.
+  correct_option: d
+  explanation: Correct. That is the default rule.
+- id: ats096-030-m04-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Create a namespace
+  source_readings:
+  - sections/section-030/module-04/course-01-names-and-namespaces.md
+  prompt: Which setting creates a missing target namespace?
+  options:
+  - id: a
+    text: "`spec.targetNamespace.create`"
+    explanation: Not correct. No such field.
+  - id: b
+    text: "`spec.upgrade.createNamespace`"
+    explanation: Not correct. It applies to install.
+  - id: c
+    text: "`spec.install.createNamespace: true`"
+    explanation: Correct. It creates the namespace on install.
+  - id: d
+    text: "`spec.storageNamespace: auto`"
+    explanation: Not correct. No such value.
+  correct_option: c
+  explanation: Correct. It creates the namespace on install.
+- id: ats096-030-m04-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Protect the identity
+  source_readings:
+  - sections/section-030/module-04/course-01-names-and-namespaces.md
+  prompt: Why should `releaseName` not change on a live release?
+  options:
+  - id: a
+    text: The HelmRelease is deleted.
+    explanation: Not correct. It is not deleted.
+  - id: b
+    text: Helm finds a release by name, so a new name means a new release that collides
+      with the old objects.
+    explanation: Correct. The name is part of the identity.
+  - id: c
+    text: Helm renames the Secrets itself.
+    explanation: Not correct. It does not.
+  - id: d
+    text: Kubernetes forbids editing the field.
+    explanation: Not correct. It can be edited, with bad results.
+  correct_option: b
+  explanation: Correct. The name is part of the identity.
+- id: ats096-030-m04-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the history default
+  source_readings:
+  - sections/section-030/module-04/course-02-history-and-timeouts.md
+  prompt: What is the default of `spec.maxHistory`?
+  options:
+  - id: a
+    text: '5'
+    explanation: Correct. Five revisions are kept.
+  - id: b
+    text: '1'
+    explanation: Not correct. One would block rollback.
+  - id: c
+    text: 0, which means none.
+    explanation: Not correct. Zero means no limit.
+  - id: d
+    text: '10'
+    explanation: Not correct. Not the default.
+  correct_option: a
+  explanation: Correct. Five revisions are kept.
+- id: ats096-030-m04-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know the rollback limit
+  source_readings:
+  - sections/section-030/module-04/course-02-history-and-timeouts.md
+  prompt: 'Why is `maxHistory: 1` a poor choice?'
+  options:
+  - id: a
+    text: It deletes the current release.
+    explanation: Not correct. It does not.
+  - id: b
+    text: It disables upgrades.
+    explanation: Not correct. Upgrades still work.
+  - id: c
+    text: It makes Helm slower.
+    explanation: Not correct. It is about rollback.
+  - id: d
+    text: A rollback needs the previous revision, and none is kept.
+    explanation: Correct. Rollback restores an earlier revision.
+  correct_option: d
+  explanation: Correct. Rollback restores an earlier revision.
+- id: ats096-030-m04-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the timeout default
+  source_readings:
+  - sections/section-030/module-04/course-02-history-and-timeouts.md
+  prompt: What is the default `spec.timeout`?
+  options:
+  - id: a
+    text: 30 seconds
+    explanation: Not correct. Too short.
+  - id: b
+    text: 1 hour
+    explanation: Not correct. Too long.
+  - id: c
+    text: 5 minutes
+    explanation: Correct. Every Helm action gets five minutes.
+  - id: d
+    text: No timeout
+    explanation: Not correct. A timeout always applies.
+  correct_option: c
+  explanation: Correct. Every Helm action gets five minutes.
+- id: ats096-030-m04-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the upgrade CRD default
+  source_readings:
+  - sections/section-030/module-04/course-03-upgrades-and-definitions.md
+  prompt: What is the default of `spec.upgrade.crds`?
+  options:
+  - id: a
+    text: "`Create`"
+    explanation: Not correct. That is the install default.
+  - id: b
+    text: "`Skip`"
+    explanation: Correct. Upgrades leave CRDs alone by default.
+  - id: c
+    text: "`CreateReplace`"
+    explanation: Not correct. It must be set.
+  - id: d
+    text: "`Delete`"
+    explanation: Not correct. No such value.
+  correct_option: b
+  explanation: Correct. Upgrades leave CRDs alone by default.
+- id: ats096-030-m04-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Use reset and force
+  source_readings:
+  - sections/section-030/module-04/course-03-upgrades-and-definitions.md
+  prompt: What does `flux reconcile helmrelease --reset` do?
+  options:
+  - id: a
+    text: Clears the failure count so retries start from zero.
+    explanation: Correct. Reset restarts the retry count.
+  - id: b
+    text: Rolls back to revision 1.
+    explanation: Not correct. It does not roll back.
+  - id: c
+    text: Deletes the release.
+    explanation: Not correct. Nothing is deleted.
+  - id: d
+    text: Changes the spec in Git.
+    explanation: Not correct. It changes nothing in Git.
+  correct_option: a
+  explanation: Correct. Reset restarts the retry count.
+- id: ats096-030-m04-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know what delete does
+  source_readings:
+  - sections/section-030/module-04/course-04-uninstalling-a-release.md
+  prompt: What happens when a `HelmRelease` is deleted?
+  options:
+  - id: a
+    text: Only the object is removed; the chart keeps running.
+    explanation: Not correct. The chart is uninstalled.
+  - id: b
+    text: The namespace is deleted.
+    explanation: Not correct. The namespace stays.
+  - id: c
+    text: The release is suspended.
+    explanation: Not correct. Suspend is separate.
+  - id: d
+    text: helm-controller runs a Helm uninstall before the object is removed.
+    explanation: Correct. A finalizer holds the object until the uninstall is done.
+  correct_option: d
+  explanation: Correct. A finalizer holds the object until the uninstall is done.

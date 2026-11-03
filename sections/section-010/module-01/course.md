@@ -6,7 +6,7 @@ Flux solves this without copies. A Flux `Kustomization` is the Flux object `kust
 
 Keep one sentence in mind: **the folder in Git is the base, and each Flux `Kustomization` is the overlay for one environment.** Every command in this module tests that sentence.
 
-The module has three parts. **The Flux Kustomization And Kustomize** follows one build through kustomize-controller and previews it with `flux build` and `flux diff`. **Target Namespaces And Patches** deploys the base into a second namespace and changes the replica count and a label with patches. **Variable Substitution After The Build** sets a message and a label per environment from inline values and from a ConfigMap. A graded lab follows the third part.
+The module has four parts. **The Flux Kustomization And Kustomize** follows one build through kustomize-controller and previews it with `flux build` and `flux diff`. **Target Namespaces And Patches** deploys the base into a second namespace and changes the replica count and a label with patches. **Variable Substitution After The Build** sets a message and a label per environment from inline values and from a ConfigMap. **Patch Targets And Image Overrides** selects objects by kind, label and name, and changes images, names and common metadata without a patch. A graded lab follows the third part.
 
 ## Learning objectives
 
@@ -18,6 +18,7 @@ After this module you can:
 - Write a strategic merge patch and a JSON6902 patch, and choose their target by kind and name.
 - Set values per environment with `postBuild.substitute` and `postBuild.substituteFrom`, and use `${var:=default}`.
 - Explain what happens when a variable source is missing, and why `optional: true` can hide a mistake.
+- Select patch targets with `kind`, `name`, `labelSelector` and `annotationSelector`, and change images, names and metadata with `images`, `namePrefix` and `commonMetadata`.
 
 ## Before you start
 

@@ -1,0 +1,245 @@
+# Knowledge check for module 02 of section 010. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-010-m02
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: module-02
+  title: "Build Environments With Kustomize Files"
+placement:
+  position: after
+  reading: sections/section-010/module-02/labs/lab-01/question.md
+questions:
+  - id: ats096-010-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe how an overlay reuses a base"
+    source_readings:
+      - sections/section-010/module-02/course-01-bases-and-overlays.md
+    prompt: "How does an overlay folder reuse a base folder?"
+    options:
+      - id: a
+        text: "It lists the base folder under `resources` with a relative path in its Kustomize file."
+        explanation: "Correct. The overlay points at the base and adds changes on top."
+      - id: b
+        text: "It copies the files of the base into its own folder."
+        explanation: "Not correct. Copying is what overlays avoid."
+      - id: c
+        text: "It lists the base under `components`."
+        explanation: "Not correct. `components` is for Kustomize components, which change objects but do not add them."
+      - id: d
+        text: "It sets `sourceRef.name` to the base folder."
+        explanation: "Not correct. `sourceRef` names a Flux source, not a folder."
+    correct_option: a
+    explanation: "Correct. `resources` with a relative path such as `../../base` is how an overlay reuses a base."
+
+  - id: ats096-010-m02-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Point a Flux Kustomization at an overlay"
+    source_readings:
+      - sections/section-010/module-02/course-01-bases-and-overlays.md
+    prompt: "A Flux `Kustomization` must deploy the staging overlay `apps/podinfo/overlays/staging`. Which field selects the overlay?"
+    options:
+      - id: a
+        text: "`spec.path: ./apps/podinfo/overlays/staging`"
+        explanation: "Correct. `path` is the folder of the source that kustomize-controller builds."
+      - id: b
+        text: "`spec.targetNamespace: staging`"
+        explanation: "Not correct. `targetNamespace` sets the namespace of objects, not the folder."
+      - id: c
+        text: "`spec.sourceRef.path`"
+        explanation: "Not correct. `sourceRef` has no `path` field."
+      - id: d
+        text: "`spec.components`"
+        explanation: "Not correct. `components` lists Kustomize components, not the folder to build."
+    correct_option: a
+    explanation: "Correct. `spec.path` selects the folder, and the overlay carries its own namespace and replica count."
+
+  - id: ats096-010-m02-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Preview an overlay locally"
+    source_readings:
+      - sections/section-010/module-02/course-01-bases-and-overlays.md
+    prompt: "Which command builds an overlay folder on your machine and prints the YAML without touching the cluster?"
+    options:
+      - id: a
+        text: "`kubectl kustomize apps/podinfo/overlays/staging`"
+        explanation: "Correct. It runs the Kustomize build and prints the result."
+      - id: b
+        text: "`kubectl apply -k apps/podinfo/overlays/staging`"
+        explanation: "Not correct. This builds and applies to the cluster."
+      - id: c
+        text: "`flux reconcile kustomization podinfo-staging`"
+        explanation: "Not correct. This asks Flux to reconcile an object in the cluster."
+      - id: d
+        text: "`flux get kustomizations`"
+        explanation: "Not correct. This lists the Flux objects and their status."
+    correct_option: a
+    explanation: "Correct. `kubectl kustomize` builds and prints; it does not apply."
+
+  - id: ats096-010-m02-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pick the right transformer for an image tag"
+    source_readings:
+      - sections/section-010/module-02/course-02-images-replicas-and-labels.md
+    prompt: "An overlay must run podinfo `6.15.0` while the base uses another tag. Which Kustomize file entry does that without a patch?"
+    options:
+      - id: a
+        text: "`images` with `name: ghcr.io/stefanprodan/podinfo:6.14.0` and `newTag: 6.15.0`"
+        explanation: "Not correct. The `name` is the image name without the tag, so a name with a tag matches nothing."
+      - id: b
+        text: "`replicas` with `name: podinfo` and `count: 6`"
+        explanation: "Not correct. `replicas` sets the replica count."
+      - id: c
+        text: "`images` with `name: ghcr.io/stefanprodan/podinfo` and `newTag: 6.15.0`"
+        explanation: "Correct. `images` matches the image name without the tag and sets the new tag."
+      - id: d
+        text: "`namePrefix: 6.15.0-`"
+        explanation: "Not correct. A name prefix renames objects; it does not change images."
+    correct_option: c
+    explanation: "Correct. The `images` transformer matches the name without the tag."
+
+  - id: ats096-010-m02-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Add a label safely to a running Deployment"
+    source_readings:
+      - sections/section-010/module-02/course-02-images-replicas-and-labels.md
+    prompt: "Why does the lesson use `includeSelectors: false` when it adds a label with the `labels` field?"
+    options:
+      - id: a
+        text: "`includeSelectors: false` encrypts the label."
+        explanation: "Not correct. Labels are never encrypted."
+      - id: b
+        text: "The `spec.selector` of a Deployment cannot change, so the label goes only on the object metadata."
+        explanation: "Correct. A changed selector would make the apply fail on a live Deployment."
+      - id: c
+        text: "`includeSelectors: false` adds the label to the pods only."
+        explanation: "Not correct. Pod labels come from the pod template; `includeTemplates` handles that."
+      - id: d
+        text: "Without it, Flux cannot read the label."
+        explanation: "Not correct. Flux reads labels either way."
+    correct_option: b
+    explanation: "Correct. The Deployment selector is immutable."
+
+  - id: ats096-010-m02-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what a hash suffix does"
+    source_readings:
+      - sections/section-010/module-02/course-03-generators-and-hash-suffixes.md
+    prompt: "What does the hash suffix of a generated ConfigMap do for a Deployment that reads it?"
+    options:
+      - id: a
+        text: "It encrypts the data of the ConfigMap."
+        explanation: "Not correct. A hash is computed from the data; it does not encrypt it."
+      - id: b
+        text: "It makes Flux restart the Deployment on a timer."
+        explanation: "Not correct. Nothing restarts on a timer; the spec changes."
+      - id: c
+        text: "When the data changes the name changes, so the Deployment spec changes and the pods roll."
+        explanation: "Correct. The new name appears in the Deployment, which causes a rollout."
+      - id: d
+        text: "It keeps the old ConfigMap forever so pods can roll back."
+        explanation: "Not correct. The Flux `Kustomization` prunes the old ConfigMap."
+    correct_option: c
+    explanation: "Correct. A changed name changes the Deployment spec."
+
+  - id: ats096-010-m02-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a plain ConfigMap does not roll pods"
+    source_readings:
+      - sections/section-010/module-02/course-03-generators-and-hash-suffixes.md
+    prompt: "A plain ConfigMap file named `podinfo-config` changes its message in Git and Flux applies it. Why do the pods keep the old message?"
+    options:
+      - id: a
+        text: "Flux skips ConfigMaps."
+        explanation: "Not correct. Flux applies ConfigMaps like any other object."
+      - id: b
+        text: "The ConfigMap was not applied to the cluster."
+        explanation: "Not correct. The data was updated; the pods just did not restart."
+      - id: c
+        text: "The Deployment spec is unchanged, and container environment variables are read only when a container starts."
+        explanation: "Correct. Nothing tells Kubernetes to start new pods."
+      - id: d
+        text: "The pods read the ConfigMap only at 3 in the morning."
+        explanation: "Not correct. Pods read environment variables at container start."
+    correct_option: c
+    explanation: "Correct. Without a name change, no rollout happens."
+
+  - id: ats096-010-m02-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Spot the setting that removes the rollout"
+    source_readings:
+      - sections/section-010/module-02/course-03-generators-and-hash-suffixes.md
+    prompt: "Which generator option brings back the problem of pods that do not roll after a data change?"
+    options:
+      - id: a
+        text: "`behavior: merge`"
+        explanation: "Not correct. `behavior` controls how a generator combines with an object from a base."
+      - id: b
+        text: "`options: disableNameSuffixHash: true`"
+        explanation: "Correct. The name never changes, so the Deployment spec stays the same."
+      - id: c
+        text: "`literals` with `KEY=value`"
+        explanation: "Not correct. That is the normal way to write a literal."
+      - id: d
+        text: "`type: Opaque` on a Secret"
+        explanation: "Not correct. The type of a Secret does not affect rollouts."
+    correct_option: b
+    explanation: "Correct. With the hash off, the name is fixed."
+
+  - id: ats096-010-m02-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use a component"
+    source_readings:
+      - sections/section-010/module-02/course-04-components.md
+    prompt: "How does an overlay add the component `../../components/resource-limits` in its Kustomize file?"
+    options:
+      - id: a
+        text: "List it under `components`."
+        explanation: "Correct. `components` changes objects with the component."
+      - id: b
+        text: "List it under `resources`."
+        explanation: "Not correct. A component is not a base and cannot be a resource."
+      - id: c
+        text: "List it under `images`."
+        explanation: "Not correct. `images` changes image names."
+      - id: d
+        text: "List it under `patches` as a file name."
+        explanation: "Not correct. `patches` takes patches, not components."
+    correct_option: a
+    explanation: "Correct. A component goes under `components`."
+
+  - id: ats096-010-m02-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Find the base of a relative path in the Flux Kustomization"
+    source_readings:
+      - sections/section-010/module-02/course-04-components.md
+    prompt: "A Flux `Kustomization` has `path: ./apps/podinfo/overlays/staging` and `components: [../../components/resource-limits]`. Relative to what is the component path resolved?"
+    options:
+      - id: a
+        text: "To the root of the repository."
+        explanation: "Not correct. The path is relative, not from the root."
+      - id: b
+        text: "To `spec.path`, the folder `./apps/podinfo/overlays/staging`."
+        explanation: "Correct. The component path is relative to `spec.path`."
+      - id: c
+        text: "To the namespace `flux-system`."
+        explanation: "Not correct. A namespace is not a path."
+      - id: d
+        text: "To the folder of the Flux `Kustomization` file on your machine."
+        explanation: "Not correct. The build happens inside the source artifact."
+    correct_option: b
+    explanation: "Correct. It resolves from `spec.path`, which gives `apps/podinfo/components/resource-limits`."

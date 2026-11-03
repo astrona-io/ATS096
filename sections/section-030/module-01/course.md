@@ -6,7 +6,7 @@ With Flux, the values live in objects, and helm-controller runs the install and 
 
 Keep one sentence in mind: **source-controller fetches the chart, and helm-controller installs it.** When a release does not work, the first question is always which of the two failed.
 
-The module has three parts. **From HelmRepository To HelmRelease** installs the chart into staging and reads the release from every side. **Values, valuesFrom And OCI Chart Sources** moves the values into a ConfigMap and installs production from an OCI registry. **Failed Upgrades, Remediation And Rollback** pushes an upgrade that cannot work and lets helm-controller roll it back. A graded lab follows the third part.
+The module has four parts. **From HelmRepository To HelmRelease** installs the chart into staging and reads the release from every side. **Values, valuesFrom And OCI Chart Sources** moves the values into a ConfigMap and installs production from an OCI registry. **Failed Upgrades, Remediation And Rollback** pushes an upgrade that cannot work and lets helm-controller roll it back. A graded lab follows the third part. **Reading Release History And Status** closes the module with the four records that explain any state a release is in.
 
 ## Learning objectives
 

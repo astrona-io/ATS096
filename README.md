@@ -25,10 +25,10 @@ contains:
 
 | Section | Title | Modules | Labs | Topic |
 | --- | --- | --- | --- | --- |
-| [010](sections/section-010) | The Flux Kustomization In Depth | 1 | 1 + capstone | Building and shaping what Flux applies |
-| [020](sections/section-020) | Dependencies And Health Checks | 1 | 1 + capstone | Ordering and gating |
-| [030](sections/section-030) | Deploying Helm Charts With HelmRelease | 1 | 1 + capstone | Helm delivery and remediation |
-| [040](sections/section-040) | Drift Detection, Correction And Pruning | 1 | 1 + capstone | Keeping the cluster equal to Git |
+| [010](sections/section-010) | The Flux Kustomization In Depth | 4 | 4 + capstone | Building and shaping what Flux applies |
+| [020](sections/section-020) | Dependencies And Health Checks | 4 | 4 + capstone | Ordering and gating |
+| [030](sections/section-030) | Deploying Helm Charts With HelmRelease | 4 | 4 + capstone | Helm delivery and remediation |
+| [040](sections/section-040) | Drift Detection, Correction And Pruning | 4 | 4 + capstone | Keeping the cluster equal to Git |
 
 The order follows one delivery from build to day two. Section 010 shapes what
 kustomize-controller builds; section 020 orders and gates those builds into a
@@ -41,10 +41,22 @@ result equal to Git after people start changing things by hand.
 
 | Module | Reader | Parts | Labs |
 | --- | --- | --- | --- |
-| 010-01 | [Shape What Flux Applies With The Flux Kustomization](sections/section-010/module-01/course.md) | 3 | [lab-01](sections/section-010/module-01/labs/lab-01) |
-| 020-01 | [Order And Gate Deployments With dependsOn And Health Checks](sections/section-020/module-01/course.md) | 3 | [lab-01](sections/section-020/module-01/labs/lab-01) |
-| 030-01 | [Deploy Helm Charts With HelmRelease](sections/section-030/module-01/course.md) | 3 | [lab-01](sections/section-030/module-01/labs/lab-01) |
-| 040-01 | [Keep The Cluster Equal To Git](sections/section-040/module-01/course.md) | 3 | [lab-01](sections/section-040/module-01/labs/lab-01) |
+| 010-01 | [Shape What Flux Applies With The Flux Kustomization](sections/section-010/module-01/course.md) | 4 | [lab-01](sections/section-010/module-01/labs/lab-01) |
+| 010-02 | [Build Environments With Kustomize Files](sections/section-010/module-02/course.md) | 4 | [lab-01](sections/section-010/module-02/labs/lab-01) |
+| 010-03 | [Replacements And Debugging Builds](sections/section-010/module-03/course.md) | 4 | [lab-01](sections/section-010/module-03/labs/lab-01) |
+| 010-04 | [Securing And Sourcing Kustomizations](sections/section-010/module-04/course.md) | 4 | [lab-01](sections/section-010/module-04/labs/lab-01) |
+| 020-01 | [Order And Gate Deployments With dependsOn And Health Checks](sections/section-020/module-01/course.md) | 4 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 020-02 | [Judge Custom Resources With CEL Health Checks](sections/section-020/module-02/course.md) | 4 | [lab-01](sections/section-020/module-02/labs/lab-01) |
+| 020-03 | [Control The Reconciliation Lifecycle](sections/section-020/module-03/course.md) | 4 | [lab-01](sections/section-020/module-03/labs/lab-01) |
+| 020-04 | [Order Kustomizations Around HelmReleases And CRDs](sections/section-020/module-04/course.md) | 4 | [lab-01](sections/section-020/module-04/labs/lab-01) |
+| 030-01 | [Deploy Helm Charts With HelmRelease](sections/section-030/module-01/course.md) | 4 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 030-02 | [Choose And Pin Chart Sources](sections/section-030/module-02/course.md) | 4 | [lab-01](sections/section-030/module-02/labs/lab-01) |
+| 030-03 | [Values And Post-Rendering](sections/section-030/module-03/course.md) | 4 | [lab-01](sections/section-030/module-03/labs/lab-01) |
+| 030-04 | [Install, Upgrade And Uninstall Options](sections/section-030/module-04/course.md) | 4 | [lab-01](sections/section-030/module-04/labs/lab-01) |
+| 040-01 | [Keep The Cluster Equal To Git](sections/section-040/module-01/course.md) | 4 | [lab-01](sections/section-040/module-01/labs/lab-01) |
+| 040-02 | [Share Fields Between Flux And Other Controllers](sections/section-040/module-02/course.md) | 4 | [lab-01](sections/section-040/module-02/labs/lab-01) |
+| 040-03 | [Move And Remove Objects Safely](sections/section-040/module-03/course.md) | 4 | [lab-01](sections/section-040/module-03/labs/lab-01) |
+| 040-04 | [Helm Drift And Field Ownership](sections/section-040/module-04/course.md) | 4 | [lab-01](sections/section-040/module-04/labs/lab-01) |
 
 ---
 

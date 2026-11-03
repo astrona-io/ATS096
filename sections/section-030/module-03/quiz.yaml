@@ -1,0 +1,240 @@
+# Knowledge check for module 03 of section 030. Listed in astrona.yaml as a `type: quiz` entry after the module summary.
+schema_version: 1
+kind: question_bank
+id: ats096-030-m03
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: module
+  id: module-03
+  title: Values And Post-Rendering
+placement:
+  position: after
+  reading: sections/section-030/module-03/course-05-summary.md
+questions:
+- id: ats096-030-m03-q01
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the default key
+  source_readings:
+  - sections/section-030/module-03/course-01-values-from-configmaps-and-secrets.md
+  prompt: Which key of a ConfigMap does a `valuesFrom` entry read when `valuesKey`
+    is not set?
+  options:
+  - id: a
+    text: "`values.yaml`"
+    explanation: Correct. That is the default key.
+  - id: b
+    text: "`data`"
+    explanation: Not correct. Not a key name.
+  - id: c
+    text: "`config`"
+    explanation: Not correct. Not the default.
+  - id: d
+    text: The first key in alphabetical order.
+    explanation: Not correct. The default is fixed.
+  correct_option: a
+  explanation: Correct. That is the default key.
+- id: ats096-030-m03-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use targetPath
+  source_readings:
+  - sections/section-030/module-03/course-01-values-from-configmaps-and-secrets.md
+  prompt: 'What does `targetPath: ui.message` do?'
+  options:
+  - id: a
+    text: Parses the key as a YAML document and merges it.
+    explanation: Not correct. That is the default without targetPath.
+  - id: b
+    text: Renames the key in the ConfigMap.
+    explanation: Not correct. The ConfigMap is not changed.
+  - id: c
+    text: Creates the Service `ui`.
+    explanation: Not correct. It sets a value.
+  - id: d
+    text: Sets the content of the key as a string at `ui.message`, without parsing
+      it as YAML.
+    explanation: Correct. targetPath sets one string.
+  correct_option: d
+  explanation: Correct. targetPath sets one string.
+- id: ats096-030-m03-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know the namespace rule
+  source_readings:
+  - sections/section-030/module-03/course-01-values-from-configmaps-and-secrets.md
+  prompt: Where must the ConfigMap of a `valuesFrom` entry live?
+  options:
+  - id: a
+    text: In `flux-system`.
+    explanation: Not correct. It follows the release.
+  - id: b
+    text: In any namespace.
+    explanation: Not correct. One namespace only.
+  - id: c
+    text: In the namespace of the release.
+    explanation: Correct. valuesFrom reads from the namespace of the release.
+  - id: d
+    text: In `kube-system`.
+    explanation: Not correct. No special role.
+  correct_option: c
+  explanation: Correct. valuesFrom reads from the namespace of the release.
+- id: ats096-030-m03-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain optional
+  source_readings:
+  - sections/section-030/module-03/course-01-values-from-configmaps-and-secrets.md
+  prompt: 'What does `optional: true` on a `valuesFrom` entry do?'
+  options:
+  - id: a
+    text: It makes the values secret.
+    explanation: Not correct. It does not affect secrecy.
+  - id: b
+    text: The release installs even if the object or key is missing.
+    explanation: Correct. It turns a failure into a skip.
+  - id: c
+    text: It creates the missing object.
+    explanation: Not correct. Nothing is created.
+  - id: d
+    text: It reads the object once.
+    explanation: Not correct. It does not change timing.
+  correct_option: b
+  explanation: Correct. It turns a failure into a skip.
+- id: ats096-030-m03-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know the winner
+  source_readings:
+  - sections/section-030/module-03/course-02-merge-order-and-precedence.md
+  prompt: Which source wins when `spec.values` and `valuesFrom` set the same key?
+  options:
+  - id: a
+    text: "`spec.values`"
+    explanation: Correct. spec.values is last in the order.
+  - id: b
+    text: "`valuesFrom`"
+    explanation: Not correct. It is merged before spec.values.
+  - id: c
+    text: The chart defaults
+    explanation: Not correct. They are the lowest.
+  - id: d
+    text: The first alphabetical source
+    explanation: Not correct. Order is fixed.
+  correct_option: a
+  explanation: Correct. spec.values is last in the order.
+- id: ats096-030-m03-q06
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Order valuesFrom entries
+  source_readings:
+  - sections/section-030/module-03/course-02-merge-order-and-precedence.md
+  prompt: Two `valuesFrom` entries set the same key. Which one wins?
+  options:
+  - id: a
+    text: The earlier entry.
+    explanation: Not correct. Later wins.
+  - id: b
+    text: The ConfigMap over the Secret.
+    explanation: Not correct. The kind does not matter.
+  - id: c
+    text: It is an error.
+    explanation: Not correct. Overlaps are allowed.
+  - id: d
+    text: The later entry in the list.
+    explanation: Correct. Later entries override earlier ones.
+  correct_option: d
+  explanation: Correct. Later entries override earlier ones.
+- id: ats096-030-m03-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know list merging
+  source_readings:
+  - sections/section-030/module-03/course-02-merge-order-and-precedence.md
+  prompt: Two sources set the list `ingress.hosts`. What is the result?
+  options:
+  - id: a
+    text: The lists are appended.
+    explanation: Not correct. They are not appended.
+  - id: b
+    text: Items are merged by position.
+    explanation: Not correct. Not by position.
+  - id: c
+    text: The list of the winning source replaces the other one.
+    explanation: Correct. Lists are replaced.
+  - id: d
+    text: The release fails.
+    explanation: Not correct. No failure.
+  correct_option: c
+  explanation: Correct. Lists are replaced.
+- id: ats096-030-m03-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Know when a post-renderer runs
+  source_readings:
+  - sections/section-030/module-03/course-03-post-renderers.md
+  prompt: When does a post-renderer act?
+  options:
+  - id: a
+    text: Before the values are merged.
+    explanation: Not correct. Templates are not rendered yet.
+  - id: b
+    text: After the chart is rendered and before it is installed.
+    explanation: Correct. It rewrites the rendered YAML.
+  - id: c
+    text: After the install, on live objects.
+    explanation: Not correct. It acts before the install.
+  - id: d
+    text: When the Git source changes.
+    explanation: Not correct. It is part of the release.
+  correct_option: b
+  explanation: Correct. It rewrites the rendered YAML.
+- id: ats096-030-m03-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Know what spec.test does
+  source_readings:
+  - sections/section-030/module-03/course-04-helm-tests-and-inspecting-the-output.md
+  prompt: 'What does `spec.test.enable: true` do?'
+  options:
+  - id: a
+    text: helm-controller runs the Helm tests of the chart after an install or upgrade.
+    explanation: Correct. It requests the test hooks.
+  - id: b
+    text: It dry-runs every upgrade.
+    explanation: Not correct. That is a different feature.
+  - id: c
+    text: It validates the YAML.
+    explanation: Not correct. It runs Pods.
+  - id: d
+    text: It copies the chart to a test namespace.
+    explanation: Not correct. Nothing is copied.
+  correct_option: a
+  explanation: Correct. It requests the test hooks.
+- id: ats096-030-m03-q10
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Decode Helm storage
+  source_readings:
+  - sections/section-030/module-03/course-04-helm-tests-and-inspecting-the-output.md
+  prompt: How many times is the key `release` of a Helm storage Secret base64-decoded
+    before `gunzip`?
+  options:
+  - id: a
+    text: Once.
+    explanation: Not correct. One layer would remain.
+  - id: b
+    text: Three times.
+    explanation: Not correct. Only two layers exist.
+  - id: c
+    text: Never; it is plain JSON.
+    explanation: Not correct. It is compressed.
+  - id: d
+    text: 'Twice: once for Kubernetes and once for Helm.'
+    explanation: Correct. Both layers must be removed.
+  correct_option: d
+  explanation: Correct. Both layers must be removed.

@@ -1,0 +1,17 @@
+# The Flux Kustomization the lab starts with. Its path has a typo, and the
+# overlay in Git has a replacement that reads a key that does not exist.
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: podinfo-staging
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./apps/podinfo/overlays
+  prune: true
+  wait: true
+  timeout: 2m
+  targetNamespace: podinfo-staging
+  sourceRef:
+    kind: GitRepository
+    name: fleet

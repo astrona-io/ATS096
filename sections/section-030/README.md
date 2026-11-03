@@ -16,16 +16,39 @@ This section takes one chart, podinfo `6.15.0`, through the whole cycle: fetchin
 
 ## The learning path
 
-The module has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground.
+The section has four modules. Each module has a landing page that starts its own playground, four reading parts, a graded lab right after the part it tests, and a summary. The three newer modules end with a knowledge check.
 
 ### 1. Deploy Helm Charts With HelmRelease
-
-The playground holds Flux and empty namespaces for staging and production. It needs outbound internet, because the chart comes from `stefanprodan.github.io` and `ghcr.io`.
 
 1. From HelmRepository To HelmRelease
 2. Values, valuesFrom And OCI Chart Sources
 3. Failed Upgrades, Remediation And Rollback, followed by the lab **Override A Chart Per Environment And Survive A Bad Upgrade**
-4. Summary
+4. Reading Release History And Status
+5. Summary
+
+### 2. Choose And Pin Chart Sources
+
+1. The HelmChart Between Source And Release
+2. Versions And Reconcile Strategy
+3. Charts From Git, followed by the lab **Install A Chart From Git With A Values File**
+4. Verifying And Authenticating Charts
+5. Summary, then a knowledge check
+
+### 3. Values And Post-Rendering
+
+1. Values From ConfigMaps And Secrets
+2. Merge Order And Precedence
+3. Post-Renderers, followed by the lab **Take Values From A ConfigMap And Patch The Output**
+4. Helm Tests And Inspecting The Output
+5. Summary, then a knowledge check
+
+### 4. Install, Upgrade And Uninstall Options
+
+1. Names And Namespaces
+2. History And Timeouts, followed by the lab **Install Into A New Namespace With Separate Storage**
+3. Upgrades And Definitions
+4. Uninstalling A Release
+5. Summary, then a knowledge check
 
 ## Section capstone: Repair Two Helm Releases
 
