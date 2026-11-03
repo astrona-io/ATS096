@@ -125,6 +125,10 @@ modules:
             url: https://fluxcd.io/flux/components/kustomize/kustomizations/
           - name: "flux diff kustomization"
             url: https://fluxcd.io/flux/cmd/flux_diff_kustomization/
+      - type: quiz
+        title: "Knowledge Check: The Flux Kustomization In Depth"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
 
   - id: module-020
     title: "Dependencies And Health Checks"
@@ -197,6 +201,10 @@ modules:
             url: https://fluxcd.io/flux/components/kustomize/kustomizations/
           - name: "Flux troubleshooting cheatsheet"
             url: https://fluxcd.io/flux/cheatsheets/troubleshooting/
+      - type: quiz
+        title: "Knowledge Check: Dependencies And Health Checks"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
 
   - id: module-030
     title: "Deploying Helm Charts With HelmRelease"
@@ -270,6 +278,10 @@ modules:
             url: https://fluxcd.io/flux/components/source/ocirepositories/
           - name: "HelmRelease API: chart reference and values"
             url: https://fluxcd.io/flux/components/helm/helmreleases/
+      - type: quiz
+        title: "Knowledge Check: Deploying Helm Charts With HelmRelease"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
 
   - id: module-040
     title: "Drift Detection, Correction And Pruning"
@@ -340,3 +352,11 @@ modules:
             url: https://fluxcd.io/flux/components/kustomize/kustomizations/
           - name: "HelmRelease API: drift detection"
             url: https://fluxcd.io/flux/components/helm/helmreleases/#drift-detection
+      - type: quiz
+        title: "Knowledge Check: Drift Detection, Correction And Pruning"
+        path: sections/section-040/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Domain Quiz"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

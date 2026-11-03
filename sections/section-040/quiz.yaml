@@ -1,0 +1,245 @@
+# Knowledge check for section 040. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats096-040
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-040
+  title: "Drift Detection, Correction And Pruning"
+placement:
+  position: after
+  reading: sections/section-040/capstone/labs/lab-01/question.md
+questions:
+  - id: ats096-040-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain how kustomize-controller finds drift"
+    source_readings:
+      - sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+    prompt: "How does kustomize-controller find that a live object differs from Git?"
+    options:
+      - id: a
+        text: "It runs a server-side apply dry run and compares the answer with the live object."
+        explanation: "Correct. If the result differs, it applies the object for real."
+      - id: b
+        text: "It reads the Git history and counts the commits since the last apply."
+        explanation: "Not correct. It compares objects, not commits."
+      - id: c
+        text: "It watches the cluster for `kubectl` commands and undoes them at once."
+        explanation: "Not correct. It acts on the reconciliation schedule, not on each command."
+      - id: d
+        text: "It deletes every object and applies the whole folder again."
+        explanation: "Not correct. It applies only when the dry run shows a difference."
+    correct_option: a
+    explanation: "Correct. If the result differs, it applies the object for real."
+
+  - id: ats096-040-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Predict how long a manual change lasts"
+    source_readings:
+      - sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+    prompt: "Someone scales the staging Deployment by hand. Git sets `replicas: 1` and `interval` is `10m`. How long does the manual value last?"
+    options:
+      - id: a
+        text: "Until the next change in Git for that field."
+        explanation: "Not correct. Git is not needed. The next reconciliation puts the value back."
+      - id: b
+        text: "At most one `interval`, then kustomize-controller sets `replicas` back to `1`."
+        explanation: "Correct. A manual change to a field that Git sets lasts at most one `interval`."
+      - id: c
+        text: "For ever, because a dry run never changes live objects."
+        explanation: "Not correct. The dry run is followed by a real apply when there is a difference."
+      - id: d
+        text: "Until the Deployment is restarted."
+        explanation: "Not correct. A restart does not decide it."
+    correct_option: b
+    explanation: "Correct. A manual change to a field that Git sets lasts at most one `interval`."
+
+  - id: ats096-040-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep a field that you add by hand"
+    source_readings:
+      - sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+    prompt: "You add the label `oncall=alice` with `kubectl label`. Git does not set that label. How do you keep it through reconciliations?"
+    options:
+      - id: a
+        text: "Set `prune: false` on the Flux `Kustomization`."
+        explanation: "Not correct. `prune` controls deletion of objects, not extra fields."
+      - id: b
+        text: "Add `spec.force: true` to the Flux `Kustomization`."
+        explanation: "Not correct. `force` recreates objects with immutable field changes."
+      - id: c
+        text: "Add it with `--field-manager=flux-client-side-apply`."
+        explanation: "Correct. The label survives the reconciliation."
+      - id: d
+        text: "Add it with `--field-manager=kubectl-label`, the default."
+        explanation: "Not correct. kustomize-controller removes fields added by other managers."
+    correct_option: c
+    explanation: "Correct. The label survives the reconciliation."
+
+  - id: ats096-040-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the ssa annotation"
+    source_readings:
+      - sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+    prompt: "An object must be created from Git once and never changed by Flux after that. Which value of `kustomize.toolkit.fluxcd.io/ssa` fits?"
+    options:
+      - id: a
+        text: "`Merge`"
+        explanation: "Not correct. It keeps added fields but still applies Git changes."
+      - id: b
+        text: "`Ignore`"
+        explanation: "Not correct. It never applies the object at all, so it is not even created."
+      - id: c
+        text: "`Override`"
+        explanation: "Not correct. This is the default and takes back drifted fields."
+      - id: d
+        text: "`IfNotPresent`"
+        explanation: "Correct. It creates the object if missing and never changes it."
+    correct_option: d
+    explanation: "Correct. It creates the object if missing and never changes it."
+
+  - id: ats096-040-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Define the inventory"
+    source_readings:
+      - sections/section-040/module-01/course-02-pruning-and-the-inventory.md
+    prompt: "What is stored in `.status.inventory` of a Flux `Kustomization`?"
+    options:
+      - id: a
+        text: "The list of objects the Flux `Kustomization` applied in its last successful reconciliation."
+        explanation: "Correct. Pruning compares the new build with this list."
+      - id: b
+        text: "All objects that exist in the target namespace."
+        explanation: "Not correct. It lists only objects that kustomize-controller applied."
+      - id: c
+        text: "The files in the Git folder at the last commit."
+        explanation: "Not correct. It lists cluster objects, not files."
+      - id: d
+        text: "The objects that failed to apply."
+        explanation: "Not correct. It lists successful applies."
+    correct_option: a
+    explanation: "Correct. Pruning compares the new build with this list."
+
+  - id: ats096-040-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict pruning"
+    source_readings:
+      - sections/section-040/module-01/course-02-pruning-and-the-inventory.md
+    prompt: "A file is removed from Git, `prune: true` is set, and the object is on the inventory. What happens at the next reconciliation?"
+    options:
+      - id: a
+        text: "kustomize-controller keeps the object and removes it from the inventory."
+        explanation: "Not correct. That happens only with `prune: false`."
+      - id: b
+        text: "kustomize-controller deletes the object, because it is on the inventory and not in the build."
+        explanation: "Correct. This is how a removed file reaches the cluster."
+      - id: c
+        text: "kustomize-controller reports drift and waits for a manual delete."
+        explanation: "Not correct. Pruning deletes the object itself."
+      - id: d
+        text: "kustomize-controller recreates the file in Git."
+        explanation: "Not correct. It never writes to Git."
+    correct_option: b
+    explanation: "Correct. This is how a removed file reaches the cluster."
+
+  - id: ats096-040-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep one object when its file goes away"
+    source_readings:
+      - sections/section-040/module-01/course-02-pruning-and-the-inventory.md
+    prompt: "A namespace is defined in the same folder as the application. You want to keep only that object if its file is ever removed from Git, while pruning stays on for the other objects. What do you do?"
+    options:
+      - id: a
+        text: "Set `deletionPolicy: Delete` on the Flux `Kustomization`."
+        explanation: "Not correct. That policy applies when the Flux object is deleted."
+      - id: b
+        text: "Set `prune: false` on the Flux `Kustomization`."
+        explanation: "Not correct. This turns pruning off for every object, which is wider than needed."
+      - id: c
+        text: "Put the annotation `kustomize.toolkit.fluxcd.io/prune: disabled` on the namespace in Git."
+        explanation: "Correct. It keeps that one object when its file goes away."
+      - id: d
+        text: "Set `kustomize.toolkit.fluxcd.io/ssa: Ignore` on the namespace."
+        explanation: "Not correct. That stops Flux from applying the object at all."
+    correct_option: c
+    explanation: "Correct. It keeps that one object when its file goes away."
+
+  - id: ats096-040-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose a deletion policy"
+    source_readings:
+      - sections/section-040/module-01/course-02-pruning-and-the-inventory.md
+    prompt: "You move objects from one Flux `Kustomization` to a new one. You delete the old one. Which `deletionPolicy` keeps the objects running while the new one adopts them?"
+    options:
+      - id: a
+        text: "`Delete`"
+        explanation: "Not correct. It always deletes the applied objects."
+      - id: b
+        text: "`WaitForTermination`"
+        explanation: "Not correct. It deletes them and waits until they are gone."
+      - id: c
+        text: "`MirrorPrune` with `prune: true`"
+        explanation: "Not correct. It deletes the applied objects when `prune` is `true`."
+      - id: d
+        text: "`Orphan`"
+        explanation: "Correct. It never deletes the applied objects."
+    correct_option: d
+    explanation: "Correct. It never deletes the applied objects."
+
+  - id: ats096-040-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe the default drift behavior of helm-controller"
+    source_readings:
+      - sections/section-040/module-01/course-03-helm-drift-detection.md
+    prompt: "Someone scales a Deployment of a Helm release by hand. `driftDetection` is not set. What does helm-controller do at the next reconciliation?"
+    options:
+      - id: a
+        text: "It reports a `Drifted` condition and leaves the Deployment alone."
+        explanation: "Not correct. That is `mode: warn`."
+      - id: b
+        text: "It sets the replicas back to the value of the chart."
+        explanation: "Not correct. That needs `driftDetection.mode: enabled`."
+      - id: c
+        text: "It does not look at the live objects, because the chart and the values did not change."
+        explanation: "Correct. The manual change stays until the next upgrade."
+      - id: d
+        text: "It fails the release and starts a rollback."
+        explanation: "Not correct. Drift does not trigger remediation."
+    correct_option: c
+    explanation: "Correct. The manual change stays until the next upgrade."
+
+  - id: ats096-040-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Compare the drift detection modes"
+    source_readings:
+      - sections/section-040/module-01/course-03-helm-drift-detection.md
+    prompt: "Which `driftDetection.mode` reports differences with the condition `Drifted` and the reason `DriftDetected`, without changing any object?"
+    options:
+      - id: a
+        text: "`disabled`"
+        explanation: "Not correct. It turns off drift detection, so nothing is reported."
+      - id: b
+        text: "`warn`"
+        explanation: "Correct. It compares the live objects with the last release manifest and only reports."
+      - id: c
+        text: "`ignore`"
+        explanation: "Not correct. It is not a mode. Ignoring is done with the `ignore` rules."
+      - id: d
+        text: "`enabled`"
+        explanation: "Not correct. It reports and also corrects the drift."
+    correct_option: b
+    explanation: "Correct. It compares the live objects with the last release manifest and only reports."

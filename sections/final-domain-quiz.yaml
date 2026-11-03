@@ -1,0 +1,288 @@
+# Final domain knowledge check across all four sections.
+schema_version: 1
+kind: question_bank
+id: ats096-final
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: domain
+  id: kustomize-helm-controller-reconciliation
+  title: "Kustomize & Helm Controller Reconciliation"
+questions:
+  - id: ats096-final-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain what kustomize-controller does on each reconciliation"
+    source_readings:
+      - sections/section-010/module-01/course-01-flux-kustomization-and-kustomize.md
+    prompt: "In which order does kustomize-controller work on the folder in `spec.path`?"
+    options:
+      - id: a
+        text: "Build the folder with Kustomize, apply the Flux fields such as `targetNamespace` and `patches`, replace variables, then apply to the cluster."
+        explanation: "Correct. The variables are replaced last, after the patches."
+      - id: b
+        text: "Replace variables, build the folder with Kustomize, apply the patches, then apply to the cluster."
+        explanation: "Not correct. Substitution runs after the build and the patches, not before."
+      - id: c
+        text: "Apply the folder to the cluster, then run the patches and the variable substitution on the live objects."
+        explanation: "Not correct. The changes are made to the built YAML before the apply."
+      - id: d
+        text: "Apply the patches to the artifact archive, then build the folder, then apply to the cluster."
+        explanation: "Not correct. The patches act on the built objects, not on the archive."
+    correct_option: a
+    explanation: "Correct. The variables are replaced last, after the patches."
+
+  - id: ats096-final-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose between the two patch kinds"
+    source_readings:
+      - sections/section-010/module-01/course-02-target-namespaces-and-patches.md
+    prompt: "You need to add one label to a Deployment at the exact path `/metadata/labels/team`. Which kind of patch fits best?"
+    options:
+      - id: a
+        text: "A strategic merge patch with a partial Deployment."
+        explanation: "Not correct. A strategic merge patch is better for setting values such as `replicas`."
+      - id: b
+        text: "A JSON6902 patch with an `add` operation on that path."
+        explanation: "Correct. JSON6902 addresses an exact JSON path with operations."
+      - id: c
+        text: "A `nameSuffix` entry in the Flux `Kustomization`."
+        explanation: "Not correct. `nameSuffix` changes object names, not labels."
+      - id: d
+        text: "A `postBuild.substitute` entry named `team`."
+        explanation: "Not correct. Substitution replaces `${team}` in the YAML and does not add a label by itself."
+    correct_option: b
+    explanation: "Correct. JSON6902 addresses an exact JSON path with operations."
+
+  - id: ats096-final-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find a patch that selects nothing"
+    source_readings:
+      - sections/section-010/module-01/course-02-target-namespaces-and-patches.md
+    prompt: "A patch has `target.name: podinfo-api`, but the build has only a Deployment named `podinfo`. What happens?"
+    options:
+      - id: a
+        text: "The patch is applied to the Deployment `podinfo` instead."
+        explanation: "Not correct. A target selects by the given name only."
+      - id: b
+        text: "The apply fails and the Flux `Kustomization` is not ready."
+        explanation: "Not correct. The build does not fail in this case."
+      - id: c
+        text: "The patch selects nothing, the Flux `Kustomization` stays Ready, and the change is missing."
+        explanation: "Correct. This is why you check the built result and not only `Ready`."
+      - id: d
+        text: "kustomize-controller creates a new Deployment named `podinfo-api`."
+        explanation: "Not correct. A patch never creates objects from a target."
+    correct_option: c
+    explanation: "Correct. This is why you check the built result and not only `Ready`."
+
+  - id: ats096-final-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply the rules for dependencies"
+    source_readings:
+      - sections/section-020/module-01/course-01-ordering-with-dependson.md
+    prompt: "Which dependency setup is invalid or does not work as intended?"
+    options:
+      - id: a
+        text: "A chain where production depends on staging and staging depends on infrastructure."
+        explanation: "Not correct. Chains are allowed."
+      - id: b
+        text: "A dependency in another namespace, with `namespace` set in the entry."
+        explanation: "Not correct. This is the correct way to name it."
+      - id: c
+        text: "A dependency on two other Flux `Kustomization` objects in the same list."
+        explanation: "Not correct. This is allowed. The object waits until both are `Ready`."
+      - id: d
+        text: "Two objects that each list the other in `dependsOn`."
+        explanation: "Correct. They form a loop, so both wait for the other forever."
+    correct_option: d
+    explanation: "Correct. They form a loop, so both wait for the other forever."
+
+  - id: ats096-final-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain how the pipeline gates production"
+    source_readings:
+      - sections/section-020/module-01/course-03-staged-pipeline.md
+    prompt: "In the staged pipeline, `apps-production` has `dependsOn: apps-staging`. A bad commit breaks staging. What does production do?"
+    options:
+      - id: a
+        text: "It applies nothing and reports that the dependency `apps-staging` is not ready; production keeps the last good version."
+        explanation: "Correct. Production reads the `Ready` condition of staging before it applies."
+      - id: b
+        text: "It applies the bad commit, because both read the same branch."
+        explanation: "Not correct. The dependency stops the apply."
+      - id: c
+        text: "It applies the commit and rolls it back after its own health check."
+        explanation: "Not correct. It applies nothing at all."
+      - id: d
+        text: "It applies the last good commit again."
+        explanation: "Not correct. It does not apply anything while staging is not ready."
+    correct_option: a
+    explanation: "Correct. Production reads the `Ready` condition of staging before it applies."
+
+  - id: ats096-final-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Recover from a bad commit"
+    source_readings:
+      - sections/section-020/module-01/course-03-staged-pipeline.md
+    prompt: "The bad commit is stuck in staging. What is the right fix?"
+    options:
+      - id: a
+        text: "Delete the Deployment in staging with `kubectl`."
+        explanation: "Not correct. Flux puts it back at the next reconciliation."
+      - id: b
+        text: "Revert the commit in Git and push, so staging becomes `Ready` and production follows."
+        explanation: "Correct. The fix for a bad commit is another commit."
+      - id: c
+        text: "Remove `dependsOn` from production so it can apply the commit."
+        explanation: "Not correct. This removes the gate and sends the bad commit on."
+      - id: d
+        text: "Increase `timeout` of staging until the pod starts."
+        explanation: "Not correct. A longer timeout does not fix a missing image."
+    correct_option: b
+    explanation: "Correct. The fix for a bad commit is another commit."
+
+  - id: ats096-final-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the places that record a release"
+    source_readings:
+      - sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+    prompt: "Where does Helm store each revision of a release, which you can list with `kubectl get secrets -l owner=helm`?"
+    options:
+      - id: a
+        text: "In the `status.history` of the `HelmRepository`."
+        explanation: "Not correct. The history is in the status of the `HelmRelease`."
+      - id: b
+        text: "In a ConfigMap in `flux-system`."
+        explanation: "Not correct. Helm uses Secrets in the release namespace."
+      - id: c
+        text: "In a Secret per revision, such as `sh.helm.release.v1.podinfo.v1`, in the release namespace."
+        explanation: "Correct. This is Helm's own record, and every upgrade adds a Secret."
+      - id: d
+        text: "In an annotation on the Service of the release."
+        explanation: "Not correct. Helm does not store revisions on the Service."
+    correct_option: c
+    explanation: "Correct. This is Helm's own record, and every upgrade adds a Secret."
+
+  - id: ats096-final-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use chartRef with an OCI source"
+    source_readings:
+      - sections/section-030/module-01/course-02-values-and-chart-sources.md
+    prompt: "A `HelmRelease` installs a chart from an `OCIRepository`. Which field names the source?"
+    options:
+      - id: a
+        text: "`spec.valuesFrom` with kind `OCIRepository`."
+        explanation: "Not correct. `valuesFrom` accepts ConfigMaps and Secrets only."
+      - id: b
+        text: "`spec.url` with the `oci://` address."
+        explanation: "Not correct. A `HelmRelease` has no `url` field."
+      - id: c
+        text: "`spec.chart.spec.sourceRef` with kind `OCIRepository`."
+        explanation: "Not correct. That field is for a `HelmRepository`, `GitRepository` or `Bucket` chart source."
+      - id: d
+        text: "`spec.chartRef` with kind `OCIRepository`, and no `spec.chart`."
+        explanation: "Correct. A `HelmRelease` has exactly one of `chart` and `chartRef`."
+    correct_option: d
+    explanation: "Correct. A `HelmRelease` has exactly one of `chart` and `chartRef`."
+
+  - id: ats096-final-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the objects and controllers of a Helm install"
+    source_readings:
+      - sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+    prompt: "Which controller creates the `HelmChart` object for a `HelmRelease` that uses `spec.chart`?"
+    options:
+      - id: a
+        text: "helm-controller creates it from `spec.chart`, in the namespace of the `HelmRepository`."
+        explanation: "Correct. source-controller then downloads the chart for it."
+      - id: b
+        text: "kustomize-controller creates it when it applies the `HelmRelease`."
+        explanation: "Not correct. kustomize-controller does not handle Helm objects."
+      - id: c
+        text: "source-controller creates it when the `HelmRepository` downloads its index."
+        explanation: "Not correct. The chart is created from the release, not from the index alone."
+      - id: d
+        text: "You must create it yourself with `kubectl apply`."
+        explanation: "Not correct. You create the `HelmRepository` and the `HelmRelease` only."
+    correct_option: a
+    explanation: "Correct. source-controller then downloads the chart for it."
+
+  - id: ats096-final-q10
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Predict how long a manual change lasts"
+    source_readings:
+      - sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+    prompt: "Someone scales the staging Deployment by hand. Git sets `replicas: 1` and `interval` is `10m`. How long does the manual value last?"
+    options:
+      - id: a
+        text: "Until the next change in Git for that field."
+        explanation: "Not correct. Git is not needed. The next reconciliation puts the value back."
+      - id: b
+        text: "At most one `interval`, then kustomize-controller sets `replicas` back to `1`."
+        explanation: "Correct. A manual change to a field that Git sets lasts at most one `interval`."
+      - id: c
+        text: "For ever, because a dry run never changes live objects."
+        explanation: "Not correct. The dry run is followed by a real apply when there is a difference."
+      - id: d
+        text: "Until the Deployment is restarted."
+        explanation: "Not correct. A restart does not decide it."
+    correct_option: b
+    explanation: "Correct. A manual change to a field that Git sets lasts at most one `interval`."
+
+  - id: ats096-final-q11
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep one object when its file goes away"
+    source_readings:
+      - sections/section-040/module-01/course-02-pruning-and-the-inventory.md
+    prompt: "A namespace is defined in the same folder as the application. You want to keep only that object if its file is ever removed from Git, while pruning stays on for the other objects. What do you do?"
+    options:
+      - id: a
+        text: "Set `deletionPolicy: Delete` on the Flux `Kustomization`."
+        explanation: "Not correct. That policy applies when the Flux object is deleted."
+      - id: b
+        text: "Set `prune: false` on the Flux `Kustomization`."
+        explanation: "Not correct. This turns pruning off for every object, which is wider than needed."
+      - id: c
+        text: "Put the annotation `kustomize.toolkit.fluxcd.io/prune: disabled` on the namespace in Git."
+        explanation: "Correct. It keeps that one object when its file goes away."
+      - id: d
+        text: "Set `kustomize.toolkit.fluxcd.io/ssa: Ignore` on the namespace."
+        explanation: "Not correct. That stops Flux from applying the object at all."
+    correct_option: c
+    explanation: "Correct. It keeps that one object when its file goes away."
+
+  - id: ats096-final-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the ssa annotation"
+    source_readings:
+      - sections/section-040/module-01/course-01-drift-correction-with-server-side-apply.md
+    prompt: "An object must be created from Git once and never changed by Flux after that. Which value of `kustomize.toolkit.fluxcd.io/ssa` fits?"
+    options:
+      - id: a
+        text: "`Merge`"
+        explanation: "Not correct. It keeps added fields but still applies Git changes."
+      - id: b
+        text: "`Ignore`"
+        explanation: "Not correct. It never applies the object at all, so it is not even created."
+      - id: c
+        text: "`Override`"
+        explanation: "Not correct. This is the default and takes back drifted fields."
+      - id: d
+        text: "`IfNotPresent`"
+        explanation: "Correct. It creates the object if missing and never changes it."
+    correct_option: d
+    explanation: "Correct. It creates the object if missing and never changes it."

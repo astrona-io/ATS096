@@ -1,0 +1,245 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats096-030
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-030
+  title: "Deploying Helm Charts With HelmRelease"
+placement:
+  position: after
+  reading: sections/section-030/capstone/labs/lab-01/question.md
+questions:
+  - id: ats096-030-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name the objects and controllers of a Helm install"
+    source_readings:
+      - sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+    prompt: "Which controller creates the `HelmChart` object for a `HelmRelease` that uses `spec.chart`?"
+    options:
+      - id: a
+        text: "helm-controller creates it from `spec.chart`, in the namespace of the `HelmRepository`."
+        explanation: "Correct. source-controller then downloads the chart for it."
+      - id: b
+        text: "kustomize-controller creates it when it applies the `HelmRelease`."
+        explanation: "Not correct. kustomize-controller does not handle Helm objects."
+      - id: c
+        text: "source-controller creates it when the `HelmRepository` downloads its index."
+        explanation: "Not correct. The chart is created from the release, not from the index alone."
+      - id: d
+        text: "You must create it yourself with `kubectl apply`."
+        explanation: "Not correct. You create the `HelmRepository` and the `HelmRelease` only."
+    correct_option: a
+    explanation: "Correct. source-controller then downloads the chart for it."
+
+  - id: ats096-030-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find the error of a missing chart version"
+    source_readings:
+      - sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+    prompt: "You set `version: 9.9.9`, which does not exist in the chart repository. Where does the error show first?"
+    options:
+      - id: a
+        text: "On the `HelmRepository`, which becomes not ready."
+        explanation: "Not correct. The repository index was downloaded without problems."
+      - id: b
+        text: "On the `HelmChart`, which you list with `flux get sources chart -A`."
+        explanation: "Correct. source-controller cannot fetch that chart version."
+      - id: c
+        text: "In the Helm storage Secret `sh.helm.release.v1.podinfo.v1`."
+        explanation: "Not correct. No release is made, so no Secret exists."
+      - id: d
+        text: "On the namespace of the release, which is rejected."
+        explanation: "Not correct. The namespace is not involved in chart fetching."
+    correct_option: b
+    explanation: "Correct. source-controller cannot fetch that chart version."
+
+  - id: ats096-030-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the places that record a release"
+    source_readings:
+      - sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+    prompt: "Where does Helm store each revision of a release, which you can list with `kubectl get secrets -l owner=helm`?"
+    options:
+      - id: a
+        text: "In the `status.history` of the `HelmRepository`."
+        explanation: "Not correct. The history is in the status of the `HelmRelease`."
+      - id: b
+        text: "In a ConfigMap in `flux-system`."
+        explanation: "Not correct. Helm uses Secrets in the release namespace."
+      - id: c
+        text: "In a Secret per revision, such as `sh.helm.release.v1.podinfo.v1`, in the release namespace."
+        explanation: "Correct. This is Helm's own record, and every upgrade adds a Secret."
+      - id: d
+        text: "In an annotation on the Service of the release."
+        explanation: "Not correct. Helm does not store revisions on the Service."
+    correct_option: c
+    explanation: "Correct. This is Helm's own record, and every upgrade adds a Secret."
+
+  - id: ats096-030-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose safe chart versions"
+    source_readings:
+      - sections/section-030/module-01/course-01-helmrepository-and-helmrelease.md
+    prompt: "Why should production use `version: 6.15.0` and not `version: 6.x`?"
+    options:
+      - id: a
+        text: "A range is not allowed in a `HelmRelease`."
+        explanation: "Not correct. Ranges are allowed. They are not safe for production."
+      - id: b
+        text: "A range makes helm-controller skip the health check."
+        explanation: "Not correct. The version field does not change health checks."
+      - id: c
+        text: "An exact version is faster to download than a range."
+        explanation: "Not correct. Speed is not the reason."
+      - id: d
+        text: "A range installs the newest matching version at the next fetch, so the chart can change without a commit."
+        explanation: "Correct. An exact version changes only with a commit."
+    correct_option: d
+    explanation: "Correct. An exact version changes only with a commit."
+
+  - id: ats096-030-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain valuesFrom"
+    source_readings:
+      - sections/section-030/module-01/course-02-values-and-chart-sources.md
+    prompt: "Where must a ConfigMap listed in `spec.valuesFrom` be?"
+    options:
+      - id: a
+        text: "In the namespace of the `HelmRelease`."
+        explanation: "Correct. `valuesFrom` reads only from that namespace."
+      - id: b
+        text: "In `flux-system`, next to the `HelmRepository`."
+        explanation: "Not correct. The source namespace does not matter for values."
+      - id: c
+        text: "In any namespace, if you set `namespace` in the entry."
+        explanation: "Not correct. The entries have no `namespace` field."
+      - id: d
+        text: "In the namespace `helm-system` of helm-controller."
+        explanation: "Not correct. helm-controller does not read from its own namespace."
+    correct_option: a
+    explanation: "Correct. `valuesFrom` reads only from that namespace."
+
+  - id: ats096-030-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict the order in which values merge"
+    source_readings:
+      - sections/section-030/module-01/course-02-values-and-chart-sources.md
+    prompt: "A `HelmRelease` has two `valuesFrom` entries and inline `spec.values`. Which value wins when all three set `ui.message`?"
+    options:
+      - id: a
+        text: "The first `valuesFrom` entry."
+        explanation: "Not correct. Earlier entries are overridden by later ones."
+      - id: b
+        text: "The inline `spec.values`, because it is merged last, on top of the `valuesFrom` entries."
+        explanation: "Correct. Later entries override earlier ones, and inline values come last."
+      - id: c
+        text: "The last `valuesFrom` entry, because inline values are only defaults."
+        explanation: "Not correct. Inline values are merged on top of all entries."
+      - id: d
+        text: "None of them. The reconcile fails with a conflict."
+        explanation: "Not correct. Merging never fails because of overlap."
+    correct_option: b
+    explanation: "Correct. Later entries override earlier ones, and inline values come last."
+
+  - id: ats096-030-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use targetPath"
+    source_readings:
+      - sections/section-030/module-01/course-02-values-and-chart-sources.md
+    prompt: "A Secret key `message` holds `production`. You want it to become the chart value `ui.message`. What do you set in the `valuesFrom` entry?"
+    options:
+      - id: a
+        text: "`optional: true` and `valuesKey: ui.message`"
+        explanation: "Not correct. `optional` only allows a missing source."
+      - id: b
+        text: "`valuesKey: ui.message`"
+        explanation: "Not correct. `valuesKey` names the key in the Secret."
+      - id: c
+        text: "`valuesKey: message` and `targetPath: ui.message`"
+        explanation: "Correct. The content of the key becomes the value at that path."
+      - id: d
+        text: "`targetPath: message` and `valuesKey: ui.message`"
+        explanation: "Not correct. The two fields are swapped."
+    correct_option: c
+    explanation: "Correct. The content of the key becomes the value at that path."
+
+  - id: ats096-030-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use chartRef with an OCI source"
+    source_readings:
+      - sections/section-030/module-01/course-02-values-and-chart-sources.md
+    prompt: "A `HelmRelease` installs a chart from an `OCIRepository`. Which field names the source?"
+    options:
+      - id: a
+        text: "`spec.valuesFrom` with kind `OCIRepository`."
+        explanation: "Not correct. `valuesFrom` accepts ConfigMaps and Secrets only."
+      - id: b
+        text: "`spec.url` with the `oci://` address."
+        explanation: "Not correct. A `HelmRelease` has no `url` field."
+      - id: c
+        text: "`spec.chart.spec.sourceRef` with kind `OCIRepository`."
+        explanation: "Not correct. That field is for a `HelmRepository`, `GitRepository` or `Bucket` chart source."
+      - id: d
+        text: "`spec.chartRef` with kind `OCIRepository`, and no `spec.chart`."
+        explanation: "Correct. A `HelmRelease` has exactly one of `chart` and `chartRef`."
+    correct_option: d
+    explanation: "Correct. A `HelmRelease` has exactly one of `chart` and `chartRef`."
+
+  - id: ats096-030-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "State the default of remediation"
+    source_readings:
+      - sections/section-030/module-01/course-03-remediation-and-rollback.md
+    prompt: "A `HelmRelease` has the default settings. The upgrade fails. What happens?"
+    options:
+      - id: a
+        text: "helm-controller retries the upgrade until it works."
+        explanation: "Not correct. The default is no retries."
+      - id: b
+        text: "helm-controller rolls back to the last good revision."
+        explanation: "Not correct. The default retries is `0`, so no remediation runs."
+      - id: c
+        text: "The release stays failed until someone changes the configuration."
+        explanation: "Correct. With `retries: 0` and no `remediateLastFailure`, nothing rolls back."
+      - id: d
+        text: "helm-controller uninstalls the release."
+        explanation: "Not correct. The `uninstall` strategy has to be set by you."
+    correct_option: c
+    explanation: "Correct. With `retries: 0` and no `remediateLastFailure`, nothing rolls back."
+
+  - id: ats096-030-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the Stalled condition"
+    source_readings:
+      - sections/section-030/module-01/course-03-remediation-and-rollback.md
+    prompt: "A `HelmRelease` with `upgrade.remediation.retries: 1` shows the condition `Stalled` with the reason `RetriesExceeded`. What gets it going again?"
+    options:
+      - id: a
+        text: "Changing the values, the chart version or another part of the spec, which resets the failure counters."
+        explanation: "Correct. The way out is to fix what made the upgrade fail."
+      - id: b
+        text: "Running `helm rollback` by hand."
+        explanation: "Not correct. helm-controller tries its own spec again at the next reconciliation."
+      - id: c
+        text: "Waiting for the `interval` to pass."
+        explanation: "Not correct. A stalled release does nothing until its configuration changes."
+      - id: d
+        text: "Deleting the Helm storage Secrets of the failed revisions."
+        explanation: "Not correct. The Secrets are the record and do not reset the counters."
+    correct_option: a
+    explanation: "Correct. The way out is to fix what made the upgrade fail."

@@ -1,0 +1,245 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats096-010
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "The Flux Kustomization In Depth"
+placement:
+  position: after
+  reading: sections/section-010/capstone/labs/lab-01/question.md
+questions:
+  - id: ats096-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain what kustomize-controller does on each reconciliation"
+    source_readings:
+      - sections/section-010/module-01/course-01-flux-kustomization-and-kustomize.md
+    prompt: "In which order does kustomize-controller work on the folder in `spec.path`?"
+    options:
+      - id: a
+        text: "Build the folder with Kustomize, apply the Flux fields such as `targetNamespace` and `patches`, replace variables, then apply to the cluster."
+        explanation: "Correct. The variables are replaced last, after the patches."
+      - id: b
+        text: "Replace variables, build the folder with Kustomize, apply the patches, then apply to the cluster."
+        explanation: "Not correct. Substitution runs after the build and the patches, not before."
+      - id: c
+        text: "Apply the folder to the cluster, then run the patches and the variable substitution on the live objects."
+        explanation: "Not correct. The changes are made to the built YAML before the apply."
+      - id: d
+        text: "Apply the patches to the artifact archive, then build the folder, then apply to the cluster."
+        explanation: "Not correct. The patches act on the built objects, not on the archive."
+    correct_option: a
+    explanation: "Correct. The variables are replaced last, after the patches."
+
+  - id: ats096-010-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Tell the Kustomize tool apart from the Flux Kustomization"
+    source_readings:
+      - sections/section-010/module-01/course-01-flux-kustomization-and-kustomize.md
+    prompt: "Which statement about `kubectl kustomize apps/podinfo/base` is correct?"
+    options:
+      - id: a
+        text: "It replaces `${environment:=dev}` with `dev`, like kustomize-controller does."
+        explanation: "Not correct. The Kustomize tool never replaces `${variables}`."
+      - id: b
+        text: "It runs only the Kustomize build, so a `${environment:=dev}` in a file stays plain text."
+        explanation: "Correct. Variable substitution is a kustomize-controller step."
+      - id: c
+        text: "It applies the result to the cluster and sets the `targetNamespace`."
+        explanation: "Not correct. The command only prints YAML and does not know Flux fields."
+      - id: d
+        text: "It reads the Flux `Kustomization` from the cluster and applies its patches."
+        explanation: "Not correct. Only `flux build kustomization` reads the Flux object."
+    correct_option: b
+    explanation: "Correct. Variable substitution is a kustomize-controller step."
+
+  - id: ats096-010-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Preview a build with flux build"
+    source_readings:
+      - sections/section-010/module-01/course-01-flux-kustomization-and-kustomize.md
+    prompt: "You want to see the exact YAML that kustomize-controller applies for `podinfo-staging`, including replaced variables, built from your local clone. Which command do you run?"
+    options:
+      - id: a
+        text: "`flux get kustomizations`"
+        explanation: "Not correct. It lists the Flux objects and their status, not the built YAML."
+      - id: b
+        text: "`kubectl kustomize apps/podinfo/base`"
+        explanation: "Not correct. It does not apply Flux fields or variables."
+      - id: c
+        text: "`flux build kustomization podinfo-staging --path ./apps/podinfo/base`"
+        explanation: "Correct. It runs the same steps as kustomize-controller on your local folder."
+      - id: d
+        text: "`flux reconcile kustomization podinfo-staging`"
+        explanation: "Not correct. It starts a reconciliation and prints no YAML."
+    correct_option: c
+    explanation: "Correct. It runs the same steps as kustomize-controller on your local folder."
+
+  - id: ats096-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read the exit code of flux diff"
+    source_readings:
+      - sections/section-010/module-01/course-01-flux-kustomization-and-kustomize.md
+    prompt: "`flux diff kustomization podinfo-staging --path ./apps/podinfo/base` exits with code `1`. What does that mean?"
+    options:
+      - id: a
+        text: "The command failed because the Flux `Kustomization` does not exist."
+        explanation: "Not correct. A failure exits with a code greater than `1`."
+      - id: b
+        text: "The local build and the cluster are identical."
+        explanation: "Not correct. Identical state exits with `0`."
+      - id: c
+        text: "The source is not ready, so no comparison was made."
+        explanation: "Not correct. That would be an error, not code `1`."
+      - id: d
+        text: "The command found differences between the local build and the cluster."
+        explanation: "Correct. An error uses a code greater than `1`."
+    correct_option: d
+    explanation: "Correct. An error uses a code greater than `1`."
+
+  - id: ats096-010-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain targetNamespace"
+    source_readings:
+      - sections/section-010/module-01/course-02-target-namespaces-and-patches.md
+    prompt: "What does `spec.targetNamespace` of a Flux `Kustomization` do?"
+    options:
+      - id: a
+        text: "It sets the namespace of every namespaced object the build produces."
+        explanation: "Correct. It overrides a namespace the folder already sets."
+      - id: b
+        text: "It creates the namespace if it does not exist."
+        explanation: "Not correct. It never creates the namespace. The apply fails if the namespace is missing."
+      - id: c
+        text: "It limits which namespaces the controller may read the source from."
+        explanation: "Not correct. It changes the objects, not the source access."
+      - id: d
+        text: "It adds a `namespace` label to the Flux `Kustomization`."
+        explanation: "Not correct. It changes the built objects, not the Flux object."
+    correct_option: a
+    explanation: "Correct. It overrides a namespace the folder already sets."
+
+  - id: ats096-010-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose between the two patch kinds"
+    source_readings:
+      - sections/section-010/module-01/course-02-target-namespaces-and-patches.md
+    prompt: "You need to add one label to a Deployment at the exact path `/metadata/labels/team`. Which kind of patch fits best?"
+    options:
+      - id: a
+        text: "A strategic merge patch with a partial Deployment."
+        explanation: "Not correct. A strategic merge patch is better for setting values such as `replicas`."
+      - id: b
+        text: "A JSON6902 patch with an `add` operation on that path."
+        explanation: "Correct. JSON6902 addresses an exact JSON path with operations."
+      - id: c
+        text: "A `nameSuffix` entry in the Flux `Kustomization`."
+        explanation: "Not correct. `nameSuffix` changes object names, not labels."
+      - id: d
+        text: "A `postBuild.substitute` entry named `team`."
+        explanation: "Not correct. Substitution replaces `${team}` in the YAML and does not add a label by itself."
+    correct_option: b
+    explanation: "Correct. JSON6902 addresses an exact JSON path with operations."
+
+  - id: ats096-010-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find a patch that selects nothing"
+    source_readings:
+      - sections/section-010/module-01/course-02-target-namespaces-and-patches.md
+    prompt: "A patch has `target.name: podinfo-api`, but the build has only a Deployment named `podinfo`. What happens?"
+    options:
+      - id: a
+        text: "The patch is applied to the Deployment `podinfo` instead."
+        explanation: "Not correct. A target selects by the given name only."
+      - id: b
+        text: "The apply fails and the Flux `Kustomization` is not ready."
+        explanation: "Not correct. The build does not fail in this case."
+      - id: c
+        text: "The patch selects nothing, the Flux `Kustomization` stays Ready, and the change is missing."
+        explanation: "Correct. This is why you check the built result and not only `Ready`."
+      - id: d
+        text: "kustomize-controller creates a new Deployment named `podinfo-api`."
+        explanation: "Not correct. A patch never creates objects from a target."
+    correct_option: c
+    explanation: "Correct. This is why you check the built result and not only `Ready`."
+
+  - id: ats096-010-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain postBuild.substituteFrom"
+    source_readings:
+      - sections/section-010/module-01/course-03-variable-substitution.md
+    prompt: "Where does `postBuild.substituteFrom` read variable values from?"
+    options:
+      - id: a
+        text: "From the `substitute` map of the Git repository."
+        explanation: "Not correct. The `substitute` map is a field of the Flux object, not of Git."
+      - id: b
+        text: "From environment variables of the kustomize-controller pod."
+        explanation: "Not correct. Values come from the listed ConfigMaps and Secrets."
+      - id: c
+        text: "From ConfigMaps and Secrets in the namespace of the application."
+        explanation: "Not correct. They are read from the namespace of the Flux `Kustomization`."
+      - id: d
+        text: "From ConfigMaps and Secrets in the namespace of the Flux `Kustomization`, for example `flux-system`."
+        explanation: "Correct. The keys of the ConfigMap become the variable names."
+    correct_option: d
+    explanation: "Correct. The keys of the ConfigMap become the variable names."
+
+  - id: ats096-010-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain variable defaults"
+    source_readings:
+      - sections/section-010/module-01/course-03-variable-substitution.md
+    prompt: "The base has `${message:=deployed by Flux}` and no `postBuild` value for `message` is set. What is the value after the build?"
+    options:
+      - id: a
+        text: "An empty string."
+        explanation: "Not correct. An empty string is used only when there is no default."
+      - id: b
+        text: "`deployed by Flux`, the default after `:=`."
+        explanation: "Correct. The default is used when no value is given."
+      - id: c
+        text: "The build fails with an unresolved variable error."
+        explanation: "Not correct. A missing value with a default does not fail."
+      - id: d
+        text: "The literal text `${message:=deployed by Flux}`."
+        explanation: "Not correct. Substitution always replaces the variable."
+    correct_option: b
+    explanation: "Correct. The default is used when no value is given."
+
+  - id: ats096-010-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe a missing variable source"
+    source_readings:
+      - sections/section-010/module-01/course-03-variable-substitution.md
+    prompt: "A `substituteFrom` entry names a ConfigMap that does not exist, and `optional` is not set. What does kustomize-controller do?"
+    options:
+      - id: a
+        text: "It stops the reconciliation, the Flux `Kustomization` becomes not ready, and the objects stay as they were."
+        explanation: "Correct. `optional` is `false` by default."
+      - id: b
+        text: "It applies the objects with the default values and reports Ready."
+        explanation: "Not correct. That happens only with `optional: true`."
+      - id: c
+        text: "It deletes the objects that use the variables."
+        explanation: "Not correct. A failed source does not remove objects."
+      - id: d
+        text: "It creates an empty ConfigMap with that name."
+        explanation: "Not correct. kustomize-controller never creates the source."
+    correct_option: a
+    explanation: "Correct. `optional` is `false` by default."

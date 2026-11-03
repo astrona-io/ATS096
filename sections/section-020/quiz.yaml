@@ -1,0 +1,245 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats096-020
+course_id: ATS096
+exam_code: FLUX
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "Dependencies And Health Checks"
+placement:
+  position: after
+  reading: sections/section-020/capstone/labs/lab-01/question.md
+questions:
+  - id: ats096-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain what dependsOn checks"
+    source_readings:
+      - sections/section-020/module-01/course-01-ordering-with-dependson.md
+    prompt: "What does kustomize-controller check before it applies a Flux `Kustomization` that has `dependsOn`?"
+    options:
+      - id: a
+        text: "That the `Ready` condition of every listed Flux `Kustomization` is true."
+        explanation: "Correct. It reads the condition of the other object and nothing else."
+      - id: b
+        text: "That every Deployment in the dependency runs the newest image tag."
+        explanation: "Not correct. It does not look at the workloads of the dependency itself."
+      - id: c
+        text: "That the dependency was created before this object."
+        explanation: "Not correct. Creation order does not matter to Flux."
+      - id: d
+        text: "That the dependency reconciled in the last `retryInterval`."
+        explanation: "Not correct. It checks the `Ready` condition, not the time of the last run."
+    correct_option: a
+    explanation: "Correct. It reads the condition of the other object and nothing else."
+
+  - id: ats096-020-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read the state of a waiting object"
+    source_readings:
+      - sections/section-020/module-01/course-01-ordering-with-dependson.md
+    prompt: "`apps-staging` depends on `infrastructure`, which does not exist. What does `flux get kustomizations` show for `apps-staging`?"
+    options:
+      - id: a
+        text: "`READY` is `True` and `podinfo` is applied with default values."
+        explanation: "Not correct. A missing dependency stops the apply."
+      - id: b
+        text: "`READY` is `False` with a message that the dependency `flux-system/infrastructure` is not ready, and nothing is applied."
+        explanation: "Correct. A missing object counts as not ready, with the reason `DependencyNotReady`."
+      - id: c
+        text: "The object is rejected by the API server when you apply it."
+        explanation: "Not correct. The API server stores it. The wait happens in the controller."
+      - id: d
+        text: "`READY` is `Unknown` until you create `infrastructure`."
+        explanation: "Not correct. The object reports not ready with a message."
+    correct_option: b
+    explanation: "Correct. A missing object counts as not ready, with the reason `DependencyNotReady`."
+
+  - id: ats096-020-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Control how fast a dependent notices"
+    source_readings:
+      - sections/section-020/module-01/course-01-ordering-with-dependson.md
+    prompt: "`apps-staging` waits for `infrastructure` and has `interval: 10m`. Which field makes it try again every 30 seconds after a failed attempt?"
+    options:
+      - id: a
+        text: "`interval: 30s`"
+        explanation: "Not correct. This changes the normal schedule for all runs, not the wait after a failure."
+      - id: b
+        text: "`timeout: 30s`"
+        explanation: "Not correct. `timeout` is the time budget of one reconciliation."
+      - id: c
+        text: "`retryInterval: 30s`"
+        explanation: "Correct. Without it, the dependent waits a whole `interval` before the next try."
+      - id: d
+        text: "`dependsOn.retry: 30s`"
+        explanation: "Not correct. A `dependsOn` entry has no such field."
+    correct_option: c
+    explanation: "Correct. Without it, the dependent waits a whole `interval` before the next try."
+
+  - id: ats096-020-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply the rules for dependencies"
+    source_readings:
+      - sections/section-020/module-01/course-01-ordering-with-dependson.md
+    prompt: "Which dependency setup is invalid or does not work as intended?"
+    options:
+      - id: a
+        text: "A chain where production depends on staging and staging depends on infrastructure."
+        explanation: "Not correct. Chains are allowed."
+      - id: b
+        text: "A dependency in another namespace, with `namespace` set in the entry."
+        explanation: "Not correct. This is the correct way to name it."
+      - id: c
+        text: "A dependency on two other Flux `Kustomization` objects in the same list."
+        explanation: "Not correct. This is allowed. The object waits until both are `Ready`."
+      - id: d
+        text: "Two objects that each list the other in `dependsOn`."
+        explanation: "Correct. They form a loop, so both wait for the other forever."
+    correct_option: d
+    explanation: "Correct. They form a loop, so both wait for the other forever."
+
+  - id: ats096-020-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Compare the health check fields"
+    source_readings:
+      - sections/section-020/module-01/course-02-health-checks-timeouts-and-retries.md
+    prompt: "A Flux `Kustomization` has both `wait: true` and a `healthChecks` list. What does kustomize-controller check?"
+    options:
+      - id: a
+        text: "Every object it applied, because `healthChecks` is ignored when `wait` is on."
+        explanation: "Correct. Pick one of the two fields."
+      - id: b
+        text: "Only the objects in the `healthChecks` list."
+        explanation: "Not correct. The list is ignored when `wait: true` is set."
+      - id: c
+        text: "Both lists, and it fails if either one fails."
+        explanation: "Not correct. The two fields are not combined."
+      - id: d
+        text: "Nothing, because the two fields cancel each other."
+        explanation: "Not correct. `wait: true` still checks every applied object."
+    correct_option: a
+    explanation: "Correct. Pick one of the two fields."
+
+  - id: ats096-020-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the right health check field"
+    source_readings:
+      - sections/section-020/module-01/course-02-health-checks-timeouts-and-retries.md
+    prompt: "You need to judge the health of a cert-manager `Certificate`, a kind Flux cannot judge on its own. Which field do you use?"
+    options:
+      - id: a
+        text: "`wait: true`, because it knows every custom resource."
+        explanation: "Not correct. It does not know the meaning of every custom kind."
+      - id: b
+        text: "`healthCheckExprs` with CEL expressions for `inProgress`, `failed` and `current`."
+        explanation: "Correct. It defines when an object of a custom kind is healthy."
+      - id: c
+        text: "`retryInterval`, because it re-reads the status of the object."
+        explanation: "Not correct. It only sets the wait before the next attempt."
+      - id: d
+        text: "`timeout`, because it marks slow objects as healthy."
+        explanation: "Not correct. It sets a time budget and never marks objects healthy."
+    correct_option: b
+    explanation: "Correct. It defines when an object of a custom kind is healthy."
+
+  - id: ats096-020-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a failed health check"
+    source_readings:
+      - sections/section-020/module-01/course-02-health-checks-timeouts-and-retries.md
+    prompt: "You set a non-existing image tag in `apps-staging`. The reconcile ends with `HealthCheckFailed`. What is the state of the cluster?"
+    options:
+      - id: a
+        text: "The Deployment was deleted and recreated from the old commit."
+        explanation: "Not correct. Nothing is deleted. The old pods stay."
+      - id: b
+        text: "Flux rolled the Deployment back to the previous commit."
+        explanation: "Not correct. Flux does not roll back."
+      - id: c
+        text: "The new Deployment spec is applied, the new pod is in `ImagePullBackOff`, and the old pod keeps running."
+        explanation: "Correct. The Deployment keeps the last working version. Only the `Ready` condition changes."
+      - id: d
+        text: "Nothing was applied, because the health check runs before the apply."
+        explanation: "Not correct. The health check runs after the apply."
+    correct_option: c
+    explanation: "Correct. The Deployment keeps the last working version. Only the `Ready` condition changes."
+
+  - id: ats096-020-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why wait matters on a dependency"
+    source_readings:
+      - sections/section-020/module-01/course-02-health-checks-timeouts-and-retries.md
+    prompt: "`infrastructure` has no `wait: true` and no `healthChecks`. The `redis` image cannot be pulled. What happens to `apps-staging`, which depends on it?"
+    options:
+      - id: a
+        text: "It fails with `HealthCheckFailed` because the image is missing."
+        explanation: "Not correct. The health check of `apps-staging` does not look at `redis`."
+      - id: b
+        text: "It is blocked, because `dependsOn` reads the pods of the dependency."
+        explanation: "Not correct. `dependsOn` reads only the `Ready` condition."
+      - id: c
+        text: "It stays not ready until the `redis` pod runs."
+        explanation: "Not correct. Without a health check, no wait happens."
+      - id: d
+        text: "It goes ahead, because `infrastructure` became `Ready` as soon as the objects were stored."
+        explanation: "Correct. Without a health check, the apply alone makes it `Ready`."
+    correct_option: d
+    explanation: "Correct. Without a health check, the apply alone makes it `Ready`."
+
+  - id: ats096-020-q09
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain how the pipeline gates production"
+    source_readings:
+      - sections/section-020/module-01/course-03-staged-pipeline.md
+    prompt: "In the staged pipeline, `apps-production` has `dependsOn: apps-staging`. A bad commit breaks staging. What does production do?"
+    options:
+      - id: a
+        text: "It applies nothing and reports that the dependency `apps-staging` is not ready; production keeps the last good version."
+        explanation: "Correct. Production reads the `Ready` condition of staging before it applies."
+      - id: b
+        text: "It applies the bad commit, because both read the same branch."
+        explanation: "Not correct. The dependency stops the apply."
+      - id: c
+        text: "It applies the commit and rolls it back after its own health check."
+        explanation: "Not correct. It applies nothing at all."
+      - id: d
+        text: "It applies the last good commit again."
+        explanation: "Not correct. It does not apply anything while staging is not ready."
+    correct_option: a
+    explanation: "Correct. Production reads the `Ready` condition of staging before it applies."
+
+  - id: ats096-020-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Recover from a bad commit"
+    source_readings:
+      - sections/section-020/module-01/course-03-staged-pipeline.md
+    prompt: "The bad commit is stuck in staging. What is the right fix?"
+    options:
+      - id: a
+        text: "Delete the Deployment in staging with `kubectl`."
+        explanation: "Not correct. Flux puts it back at the next reconciliation."
+      - id: b
+        text: "Revert the commit in Git and push, so staging becomes `Ready` and production follows."
+        explanation: "Correct. The fix for a bad commit is another commit."
+      - id: c
+        text: "Remove `dependsOn` from production so it can apply the commit."
+        explanation: "Not correct. This removes the gate and sends the bad commit on."
+      - id: d
+        text: "Increase `timeout` of staging until the pod starts."
+        explanation: "Not correct. A longer timeout does not fix a missing image."
+    correct_option: b
+    explanation: "Correct. The fix for a bad commit is another commit."
