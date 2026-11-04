@@ -13,7 +13,7 @@
 training:
   id: ATS096
   title: "FluxCD: Kustomize & Helm Controller Reconciliation"
-  maturity: draft
+  maturity: alpha
   description: >
     Training material covering the Kustomize & Helm Controller Reconciliation
     domain of the FluxCD training path: the Flux Kustomization against the
